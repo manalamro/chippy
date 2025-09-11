@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { useProductStore } from "../store/productStore";
+import { useTranslation } from "react-i18next";
 
 type CategoryFormProps = {
   onClose: () => void;
@@ -12,13 +13,14 @@ const CategoryForm: React.FC<CategoryFormProps> = ({ onClose, onSuccess, categor
   const [name, setName] = useState(category?.name || "");
   const [slug, setSlug] = useState(category?.slug || "");
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
+  const { t } = useTranslation();
   
   const { createCategory, updateCategory } = useProductStore();
 
   const validate = () => {
     const newErrors: { [key: string]: string } = {};
-    if (!name.trim()) newErrors.name = "Name is required";
-    if (!slug.trim()) newErrors.slug = "Slug is required";
+    if (!name.trim()) newErrors.name = t("CATEGORIES.ERROR.NAME_REQUIRED");
+    if (!slug.trim()) newErrors.slug = t("CATEGORIES.ERROR.SLUG_REQUIRED");
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -37,7 +39,7 @@ const CategoryForm: React.FC<CategoryFormProps> = ({ onClose, onSuccess, categor
       onClose();
     } catch (err: any) {
       console.error(err);
-      alert(err.message || "Something went wrong!");
+      alert(err.message || t("error.generic"));
     }
   };
 
@@ -56,13 +58,13 @@ const CategoryForm: React.FC<CategoryFormProps> = ({ onClose, onSuccess, categor
         exit={{ y: -50, opacity: 0 }}
       >
         <h2 className="text-2xl font-bold text-[#3E2723] mb-4">
-          {category ? "Update Category" : "Add Category"}
+          {category ? t("CATEGORIES.UPDATE_CATEGORY") : t("CATEGORIES.ADD_CATEGORY")}
         </h2>
 
-        <label className="block mb-1 font-semibold text-[#3E2723]">Name</label>
+        <label className="block mb-1 font-semibold text-[#3E2723]">{t("name")}</label>
         <input
           type="text"
-          placeholder="Name"
+          placeholder={t("name")}
           value={name}
           onChange={(e) => setName(e.target.value)}
           className={`w-full p-2 mb-3 border rounded ${errors.name ? "border-red-500" : ""}`}
@@ -70,10 +72,10 @@ const CategoryForm: React.FC<CategoryFormProps> = ({ onClose, onSuccess, categor
         />
         {errors.name && <p className="text-red-500 text-sm mb-2">{errors.name}</p>}
 
-        <label className="block mb-1 font-semibold text-[#3E2723]">Slug</label>
+        <label className="block mb-1 font-semibold text-[#3E2723]">{t("slug")}</label>
         <input
           type="text"
-          placeholder="Slug"
+          placeholder={t("slug")}
           value={slug}
           onChange={(e) => setSlug(e.target.value)}
           className={`w-full p-2 mb-4 border rounded ${errors.slug ? "border-red-500" : ""}`}
@@ -87,13 +89,13 @@ const CategoryForm: React.FC<CategoryFormProps> = ({ onClose, onSuccess, categor
             onClick={onClose}
             className="px-4 py-2 rounded bg-gray-300 hover:bg-gray-400"
           >
-            Cancel
+            {t("cancel")}
           </button>
           <button
             type="submit"
             className="px-4 py-2 rounded bg-gradient-to-r from-[#A97155] to-[#D9A441] text-white"
           >
-            {category ? "Update" : "Add"}
+            {category ? t("update") : t("add")}
           </button>
         </div>
       </motion.form>

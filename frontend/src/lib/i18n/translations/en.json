@@ -1,4 +1,75 @@
 {
+  "cannotDeleteCategoryWithProducts": "Category '{{name}}' cannot be deleted because it has {{count}} product(s) assigned. Please reassign or delete the products first."
+,
+  "checkout": {
+    "title": "Checkout",
+    "customerInfo": "Customer Information",
+    "fullName": "Full Name",
+    "phone": "Phone Number",
+    "goToShipping": "Go to Shipping",
+    "shippingInfo": "Shipping Information",
+    "address": "Address",
+    "city": "City",
+    "country": "Country",
+    "notes": "Additional Notes",
+    "backToCustomer": "Back to Customer Info",
+    "goToPayment": "Go to Payment",
+    "paymentInfo": "Payment Information",
+    "cardNumber": "Card Number",
+    "cardName": "Name on Card",
+    "expDate": "Expiration Date",
+    "cvv": "CVV",
+    "backToShipping": "Back to Shipping Info",
+    "placeOrder": "Place Order",
+    "orderSummary": "Order Summary",
+    "quantity": "Quantity",
+    "securePayment": "Your payment information is secure and encrypted",
+    "successMessage": "Order placed successfully!",
+    "errorMessage": "An error occurred during checkout: "
+  },
+  "adminDashboard": "Admin Dashboard",
+  "adminSubtitle": "Manage products, categories, and orders",
+  "confirmAction": "Confirm Action",
+  "cancel": "Cancel",
+  "confirm": "Confirm",
+  "updateStatus": "Update Status",
+  "orderStatus": "Order Status",
+  "orderDetails": "Order Details",
+  "customerInfo": "Customer Information",
+  "orderInfo": "Order Information",
+  "shippingAddress": "Shipping Address",
+  "orderItems": "Order Items",
+  "name": "Name",
+  "email": "Email",
+  "phone": "Phone",
+  "paymentStatus": "Payment Status",
+  "total": "Total",
+  "date": "Date",
+  "product": "Product",
+  "quantity": "Quantity",
+  "price": "Price",
+  "subtotal": "Subtotal",
+  "logout": "Logout",
+  "products": "Products",
+  "addProduct": "Add Product",
+  "category": "Category",
+  "actions": "Actions",
+  "edit": "Edit",
+  "delete": "Delete",
+  "uncategorized": "Uncategorized",
+  "noProductsFound": "No products found",
+  "categories": "Categories",
+  "addCategory": "Add Category",
+  "slug": "Slug",
+  "noCategoriesFound": "No categories found",
+  "orders": "Orders",
+  "status": "Status",
+  "createdAt": "Created At",
+  "viewDetails": "View Details",
+  "noOrdersFound": "No orders found",
+  "nA": "N/A",
+  "confirmDeleteProduct": "Are you sure you want to delete product \"{{title}}\"? This action cannot be undone.",
+  "confirmDeleteCategory": "Are you sure you want to delete category \"{{name}}\"? All products in this category will be moved to \"Uncategorized\".",
   "home": "Home",
   "products": "Products",
   "about": "aboutUs",
@@ -11,37 +82,35 @@
   "languageSwitch": "العربية",
   "GREETING": "Hello",
   "loading": "Loading...",
-  
-    "contactUs": {
-      "title": "Contact Us",
-      "subtitle": "We're here to help! Reach out to us for any inquiries about our delicious coffee, fresh cookies, or anything else.",
-      "infoTitle": "Contact Information",
-      "phone": "Phone",
-      "email": "Email",
-      "address": "Address",
-"fullAddress": "Shopping Street, Hebron, Palestine",
-      "hours": "Business Hours",
-      "weekdays": "Sat - Thu: 8 AM - 11 PM",
-      "weekend": "Fri: 2 PM - 11 PM",
-      "followUs": "Follow Us",
-      "findUs": "Find Us",
-      "map": "Map Location",
-      "formTitle": "Send Us a Message",
-      "name": "Name",
-      "namePlaceholder": "Enter your name",
-      "emailPlaceholder": "Enter your email",
-      "subject": "Subject",
-      "subjectPlaceholder": "Your message subject",
-      "message": "Message",
-      "messagePlaceholder": "Write your message here...",
-      "sendMessage": "Send Message",
-      "faqTitle": "Frequently Asked Questions",
-      "faq1Question": "How long does delivery take?",
-      "faq1Answer": "Delivery takes 30-45 minutes within the city.",
-      "faq2Question": "Do you offer bulk discounts?",
-      "faq2Answer": "Yes, we offer discounts for large orders over 10 boxes."
-    }
-  ,
+  "contactUs": {
+    "title": "Contact Us",
+    "subtitle": "We're here to help! Reach out to us for any inquiries about our delicious coffee, fresh cookies, or anything else.",
+    "infoTitle": "Contact Information",
+    "phone": "Phone",
+    "email": "Email",
+    "address": "Address",
+    "fullAddress": "Shopping Street, Hebron, Palestine",
+    "hours": "Business Hours",
+    "weekdays": "Sat - Thu: 8 AM - 11 PM",
+    "weekend": "Fri: 2 PM - 11 PM",
+    "followUs": "Follow Us",
+    "findUs": "Find Us",
+    "map": "Map Location",
+    "formTitle": "Send Us a Message",
+    "name": "Name",
+    "namePlaceholder": "Enter your name",
+    "emailPlaceholder": "Enter your email",
+    "subject": "Subject",
+    "subjectPlaceholder": "Your message subject",
+    "message": "Message",
+    "messagePlaceholder": "Write your message here...",
+    "sendMessage": "Send Message",
+    "faqTitle": "Frequently Asked Questions",
+    "faq1Question": "How long does delivery take?",
+    "faq1Answer": "Delivery takes 30-45 minutes within the city.",
+    "faq2Question": "Do you offer bulk discounts?",
+    "faq2Answer": "Yes, we offer discounts for large orders over 10 boxes."
+  },
   "HERO": {
     "TITLE_LINE1": "Enjoy",
     "TITLE_LINE2": "Sweet Moments",
@@ -72,7 +141,6 @@
     "pending": "Pending",
     "cancelled": "Cancelled"
   },
-
   "MENU": {
     "TITLE": "Our categories",
     "CATEGORIES": {
@@ -93,29 +161,28 @@
     "Tiramisu Slice": "Tiramisu Slice"
   },
   "aboutUs": {
-  "title": "About Coffee & Cookies",
-  "subtitle": {
-    "part1": "Crafting delightful moments with",
-    "coffee": "artisan coffee",
-    "and": "and",
-    "cookies": "freshly baked cookies",
-    "part2": "Every sip and bite is made to slow you down, warm your heart, and sweeten your day."
+    "title": "About Coffee & Cookies",
+    "subtitle": {
+      "part1": "Crafting delightful moments with",
+      "coffee": "artisan coffee",
+      "and": "and",
+      "cookies": "freshly baked cookies",
+      "part2": "Every sip and bite is made to slow you down, warm your heart, and sweeten your day."
+    },
+    "story": {
+      "title": "Our Story",
+      "content": "What started as a cozy family kitchen passion for coffee and cookies has grown into a local destination for warmth and indulgence. We use ethically sourced coffee beans and bake each cookie from scratch daily, ensuring every moment you spend with us feels crafted with care.",
+      "imageAlt": "Coffee and cookies"
+    },
+    "mission": {
+      "title": "Our Mission",
+      "content": "To create a space where coffee isn't rushed and cookies aren't just snacks, but both are crafted experiences. We blend tradition with innovation to bring you flavors that feel timeless yet fresh."
+    },
+    "promise": {
+      "title": "Our Promise",
+      "content": "Every cookie is baked with love, every cup brewed with precision. We promise freshness, authenticity, and care in everything we serve — because you deserve nothing less."
+    }
   },
-  "story": {
-    "title": "Our Story",
-    "content": "What started as a cozy family kitchen passion for coffee and cookies has grown into a local destination for warmth and indulgence. We use ethically sourced coffee beans and bake each cookie from scratch daily, ensuring every moment you spend with us feels crafted with care.",
-    "imageAlt": "Coffee and cookies"
-  },
-  "mission": {
-    "title": "Our Mission",
-    "content": "To create a space where coffee isn't rushed and cookies aren't just snacks, but both are crafted experiences. We blend tradition with innovation to bring you flavors that feel timeless yet fresh."
-  },
-  "promise": {
-    "title": "Our Promise",
-    "content": "Every cookie is baked with love, every cup brewed with precision. We promise freshness, authenticity, and care in everything we serve — because you deserve nothing less."
-  }
-}
-,
   "auth": {
     "login": "Login",
     "register": "Register",
@@ -135,7 +202,7 @@
     "signIn": "Sign in",
     "createAccount": "Create Account",
     "or": "or",
-    "goToCart":"back to cart",
+    "goToCart": "back to cart",
     "continueGuest": "Continue as guest",
     "cancel": "Cancel",
     "guestNotice": "You can't purchase items as a guest. Please log in to continue."
@@ -202,7 +269,6 @@
         "NO": "No",
         "HAS_BARCODE": "Has barcode"
       },
-      
       "ERROR": {
         "NAME_REQUIRED": "Product name is required",
         "UNIT_REQUIRED": "Product unit is required",
@@ -218,5 +284,27 @@
         "EDITED": "Product edited successfully"
       }
     }
+  },
+  "CATEGORIES": {
+    "ADD_CATEGORY": "Add Category",
+    "UPDATE_CATEGORY": "Update Category",
+    "NAME": "Name",
+    "SLUG": "Slug",
+    "ERROR": {
+      "NAME_REQUIRED": "Name is required",
+      "SLUG_REQUIRED": "Slug is required"
+    }
+  },
+  "error": {
+    "generic": "Something went wrong!"
+  },
+  "add": "Add",
+  "update": "Update",
+  "buttons": {
+    "add": "Add",
+    "remove": "Remove",
+    "increase": "Increase",
+    "decrease": "Decrease",
+    "checkout": "Checkout"
   }
 }

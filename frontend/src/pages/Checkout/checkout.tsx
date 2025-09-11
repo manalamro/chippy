@@ -2,9 +2,11 @@ import React, { useState } from "react";
 import { CreditCard, Lock, ArrowLeft } from "lucide-react";
 import { useCartStore } from "../../store/cartStore";
 import { useOrdersStore } from "../../store/ordersStore";
-import { createAddress } from "../../lib/apiClient"; // function to save address
+import { createAddress } from "../../lib/apiClient";
+import { useTranslation } from "react-i18next";
 
 const Checkout: React.FC = () => {
+  const { t } = useTranslation();
   const { cart } = useCartStore();
   const items = cart?.items || [];
 
@@ -15,10 +17,7 @@ const Checkout: React.FC = () => {
     payment: { cardNumber: "", cardName: "", expDate: "", cvv: "" },
   });
 
-  const subtotal = items.reduce((total, item) => total + item.product.price * item.quantity, 0);
-  const shipping = 5.99;
-  const tax = subtotal * 0.08;
-  const total = subtotal + shipping + tax;
+  const total = items.reduce((total, item) => total + item.product.price * item.quantity, 0);
 
   const handleInputChange = (section: keyof typeof formData, field: string, value: string) => {
     setFormData(prev => ({
@@ -49,21 +48,21 @@ const Checkout: React.FC = () => {
 
       await useOrdersStore.getState().addOrder(addressId, formData.payment);
 
-      alert("تم إتمام الطلب بنجاح!");
+      alert(t("checkout.successMessage"));
       useCartStore.getState().clearCart();
       setActiveSection("customer");
     } catch (error: any) {
-      alert("حدث خطأ أثناء الدفع: " + error.message);
+      alert(t("checkout.errorMessage") + error.message);
     }
   };
 
   const renderCustomerSection = () => (
     <div className="space-y-4">
-      <h3 className="text-lg font-medium text-gray-900">معلومات العميل</h3>
+      <h3 className="text-lg font-medium text-gray-900">{t("checkout.customerInfo")}</h3>
       <div className="grid grid-cols-1 gap-y-4 gap-x-4 sm:grid-cols-2">
         <div className="sm:col-span-2">
           <label htmlFor="fullName" className="block text-sm font-medium text-gray-700">
-            الاسم الكامل
+            {t("checkout.fullName")}
           </label>
           <input
             type="text"
@@ -77,7 +76,7 @@ const Checkout: React.FC = () => {
 
         <div className="sm:col-span-2">
           <label htmlFor="phone" className="block text-sm font-medium text-gray-700">
-            رقم الهاتف
+            {t("checkout.phone")}
           </label>
           <input
             type="tel"
@@ -96,7 +95,7 @@ const Checkout: React.FC = () => {
           onClick={() => setActiveSection("shipping")}
           className="bg-[#A97155] py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white hover:bg-[#8f5e43]"
         >
-          الانتقال إلى الشحن
+          {t("checkout.goToShipping")}
         </button>
       </div>
     </div>
@@ -104,11 +103,11 @@ const Checkout: React.FC = () => {
 
   const renderShippingSection = () => (
     <div className="space-y-4">
-      <h3 className="text-lg font-medium text-gray-900">معلومات الشحن</h3>
+      <h3 className="text-lg font-medium text-gray-900">{t("checkout.shippingInfo")}</h3>
       <div className="grid grid-cols-1 gap-y-4 gap-x-4 sm:grid-cols-2">
         <div className="sm:col-span-2">
           <label htmlFor="street" className="block text-sm font-medium text-gray-700">
-            العنوان
+            {t("checkout.address")}
           </label>
           <input
             type="text"
@@ -122,7 +121,7 @@ const Checkout: React.FC = () => {
 
         <div>
           <label htmlFor="city" className="block text-sm font-medium text-gray-700">
-            المدينة
+            {t("checkout.city")}
           </label>
           <input
             type="text"
@@ -136,7 +135,7 @@ const Checkout: React.FC = () => {
 
         <div>
           <label htmlFor="country" className="block text-sm font-medium text-gray-700">
-            الدولة
+            {t("checkout.country")}
           </label>
           <input
             type="text"
@@ -150,7 +149,7 @@ const Checkout: React.FC = () => {
 
         <div className="sm:col-span-2">
           <label htmlFor="notes" className="block text-sm font-medium text-gray-700">
-            ملاحظات إضافية
+            {t("checkout.notes")}
           </label>
           <input
             type="text"
@@ -169,14 +168,14 @@ const Checkout: React.FC = () => {
           className="flex items-center text-sm text-[#A97155] hover:text-[#8f5e43]"
         >
           <ArrowLeft size={16} className="ml-1" />
-          العودة إلى معلومات العميل
+          {t("checkout.backToCustomer")}
         </button>
         <button
           type="button"
           onClick={() => setActiveSection("payment")}
           className="bg-[#A97155] py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white hover:bg-[#8f5e43]"
         >
-          الانتقال إلى الدفع
+          {t("checkout.goToPayment")}
         </button>
       </div>
     </div>
@@ -184,11 +183,11 @@ const Checkout: React.FC = () => {
 
   const renderPaymentSection = () => (
     <div className="space-y-4">
-      <h3 className="text-lg font-medium text-gray-900">معلومات الدفع</h3>
+      <h3 className="text-lg font-medium text-gray-900">{t("checkout.paymentInfo")}</h3>
       <div className="grid grid-cols-1 gap-y-4 gap-x-4 sm:grid-cols-2">
         <div className="sm:col-span-2">
           <label htmlFor="cardNumber" className="block text-sm font-medium text-gray-700">
-            رقم البطاقة
+            {t("checkout.cardNumber")}
           </label>
           <input
             type="text"
@@ -203,7 +202,7 @@ const Checkout: React.FC = () => {
 
         <div className="sm:col-span-2">
           <label htmlFor="cardName" className="block text-sm font-medium text-gray-700">
-            الاسم على البطاقة
+            {t("checkout.cardName")}
           </label>
           <input
             type="text"
@@ -217,7 +216,7 @@ const Checkout: React.FC = () => {
 
         <div>
           <label htmlFor="expDate" className="block text-sm font-medium text-gray-700">
-            تاريخ الانتهاء
+            {t("checkout.expDate")}
           </label>
           <input
             type="text"
@@ -232,7 +231,7 @@ const Checkout: React.FC = () => {
 
         <div>
           <label htmlFor="cvv" className="block text-sm font-medium text-gray-700">
-            CVV
+            {t("checkout.cvv")}
           </label>
           <input
             type="text"
@@ -253,13 +252,13 @@ const Checkout: React.FC = () => {
           className="flex items-center text-sm text-[#A97155] hover:text-[#8f5e43]"
         >
           <ArrowLeft size={16} className="ml-1" />
-          العودة إلى معلومات الشحن
+          {t("checkout.backToShipping")}
         </button>
         <button
           type="submit"
           className="bg-[#A97155] py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white hover:bg-[#8f5e43]"
         >
-          إتمام الطلب
+          {t("checkout.placeOrder")}
         </button>
       </div>
     </div>
@@ -269,13 +268,13 @@ const Checkout: React.FC = () => {
     <div className="bg-gray-50 min-h-screen">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="max-w-2xl mx-auto lg:max-w-none">
-          <h1 className="text-3xl font-extrabold text-gray-900 sm:text-4xl">إتمام الطلب</h1>
+          <h1 className="text-3xl font-extrabold text-gray-900 sm:text-4xl">{t("checkout.title")}</h1>
 
           <form onSubmit={handleSubmit} className="lg:grid lg:grid-cols-2 lg:gap-x-12 lg:items-start mt-8">
             {/* Order summary */}
             <div className="lg:col-start-2">
               <div className="bg-white rounded-lg shadow px-4 py-6 sm:p-6 lg:p-8">
-                <h2 className="text-lg font-medium text-gray-900 mb-6">ملخص الطلب</h2>
+                <h2 className="text-lg font-medium text-gray-900 mb-6">{t("checkout.orderSummary")}</h2>
 
                 <div className="flow-root">
                   <ul className="-my-6 divide-y divide-gray-200">
@@ -289,36 +288,23 @@ const Checkout: React.FC = () => {
                           />
                         </div>
 
-                        <div className="ml-4 flex-1 flex flex-col">
+                        <div className="ml-4 pr-3 flex-1 flex flex-col">
                           <div className="flex justify-between text-base font-medium text-gray-900">
                             <h3>{item.product.title}</h3>
                             <p className="ml-4">${(item.product.price * item.quantity).toFixed(2)}</p>
                           </div>
-                          <p className="text-gray-500 text-sm">الكمية {item.quantity}</p>
+                          <p className="text-gray-500 text-sm">{t("checkout.quantity")} {item.quantity}</p>
                         </div>
                       </li>
                     ))}
                   </ul>
                 </div>
 
-                <div className="border-t border-gray-200 pt-6 mt-6">
-                  <div className="flex justify-between text-base font-medium text-gray-900">
-                    <p>المجموع الجزئي</p>
-                    <p>${subtotal.toFixed(2)}</p>
-                  </div>
-                  <div className="flex justify-between text-sm text-gray-500 mt-1">
-                    <p>الشحن</p>
-                    <p>${shipping.toFixed(2)}</p>
-                  </div>
-                  <div className="flex justify-between text-sm text-gray-500 mt-1">
-                    <p>الضريبة</p>
-                    <p>${tax.toFixed(2)}</p>
-                  </div>
-                  <div className="flex justify-between text-lg font-bold text-gray-900 mt-3 pt-3 border-t">
-                    <p>المجموع الكلي</p>
+                 
+                  <div className="flex justify-between text-lg font-bold text-gray-900 mt-6 pt-3 border-t">
+                    <p>{t("cart.total")}</p>
                     <p>${total.toFixed(2)}</p>
                   </div>
-                </div>
               </div>
             </div>
 
@@ -332,7 +318,7 @@ const Checkout: React.FC = () => {
 
               <div className="mt-6 flex items-center text-sm text-gray-500">
                 <Lock className="w-4 h-4 ml-1" />
-                <span>معلومات الدفع الخاصة بك آمنة ومشفرة</span>
+                <span>{t("checkout.securePayment")}</span>
               </div>
             </div>
           </form>
