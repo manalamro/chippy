@@ -1,0 +1,231 @@
+{
+  "home": "الصفحة الرئيسية",
+  "products": "المنتجات",
+  "about": "من نحن",
+  "brandName": "شيبي",
+  "searchButton": "بحث",
+  "userProfile": "الملف الشخصي",
+  "shoppingCart": "سلة التسوق",
+  "menu": "القائمة",
+  "closeMenu": "إغلاق القائمة",
+  "languageSwitch": "English",
+  "GREETING": "مرحباً",
+  "loading": "جارٍ التحميل...",
+  "currency": "ر.س",
+  "HERO": {
+    "TITLE_LINE1": "استمتع بـ",
+    "TITLE_LINE2": "لحظات حلوة",
+    "SUBTITLE": "قهوة، كوكيز، والمزيد\nنوصلها إلى باب منزلك",
+    "CTA_BUTTON": "تسوق الآن",
+    "FEATURES": {
+      "FRESH_BAKERY": "مخبوزات طازجة",
+      "FAST_DELIVERY": "توصيل سريع",
+      "PREMIUM_QUALITY": "جودة ممتازة"
+    },
+    "DECORATIVE": {
+      "BOTTOM_BORDER": "حد زخرفي سفلي"
+    }
+  },
+  "myOrders": "طلباتي",
+  "noOrders": "لا توجد طلبات",
+  "noOrdersMessage": "ما عندك أي طلبات سابقة.",
+  "orderNumber": "طلب رقم",
+  "address": "العنوان",
+  "status": "الحالة",
+  "total": "الإجمالي",
+  "items": "العناصر",
+  "product": "منتج",
+  "orderStatus": {
+    "delivered": "تم التوصيل",
+    "shipped": "شحنت",
+    "processing": "قيد المعالجة",
+    "pending": "معلق",
+    "cancelled": "ملغي"
+  },
+  "MENU": {
+    "TITLE": "قائمة أصنافنا ",
+    "CATEGORIES": {
+      "ALL": "الكل",
+      "COOKIES": "كوكيز",
+      "COFFEE": "قهوة",
+      "PASTRIES": "معجنات",
+      "CUPCAKES": "كب كيك",
+      "OTHERS": "أخرى"
+    },
+    "SEE_MORE": "انتقل الى صفحة المنتجات",
+    "ITEMS": "عناصر",
+    "Chocolate Chip Cookies": "كوكيز بالشوكولاتة",
+    "Cinnamon Rolls": "رولات القرفة",
+    "Vanilla Cupcakes": "كب كيك بالفانيليا",
+    "Espresso Coffee": "قهوة إسبريسو",
+    "Strawberry Donuts": "دونات بالفراولة",
+    "Tiramisu Slice": "شريحة تيراميسو"
+  },
+  
+    "contactUs": {
+      "title": "اتصل بنا",
+      "subtitle": "نحن هنا لمساعدتك! تواصل معنا لأي استفسارات حول قهوتنا اللذيذة، كوكيزنا الطازجة، أو أي شيء آخر.",
+      "infoTitle": "معلومات التواصل",
+      "phone": "الهاتف",
+      "email": "البريد الإلكتروني",
+      "address": "العنوان",
+"fullAddress": "شارع التسوق، الخليل، فلسطين",
+      "hours": "ساعات العمل",
+      "weekdays": "السبت - الخميس: 8 صباحاً - 11 مساءً",
+      "weekend": "الجمعة: 2 ظهراً - 11 مساءً",
+      "followUs": "تابعنا على",
+      "findUs": "اوجدنا",
+      "map": "خريطة الموقع",
+      "formTitle": "أرسل لنا رسالة",
+      "name": "الاسم",
+      "namePlaceholder": "أدخل اسمك",
+      "emailPlaceholder": "أدخل بريدك الإلكتروني",
+      "subject": "الموضوع",
+      "subjectPlaceholder": "موضوع رسالتك",
+      "message": "الرسالة",
+      "messagePlaceholder": "اكتب رسالتك هنا...",
+      "sendMessage": "إرسال الرسالة",
+      "faqTitle": "أسئلة شائعة",
+      "faq1Question": "كم تستغرق وقت التوصيل؟",
+      "faq1Answer": "التوصيل خلال 30-45 دقيقة داخل المدينة.",
+      "faq2Question": "هل تقدمون خصومات للكميات الكبيرة؟",
+      "faq2Answer": "نعم، نقدم خصومات للطلبات الكبيرة فوق 10 علب."
+    },
+    "aboutUs": {
+  "title": "عن قهوة و كوكيز",
+  "subtitle": {
+    "part1": "نصنع لحظات ممتعة مع",
+    "coffee": "القهوة الحرفية",
+    "and": "و",
+    "cookies": "الكوكيز الطازجة",
+    "part2": "كل رشفة وكل قضمة مصممة لإبطاء وتيرتك، تدفئة قلبك، وتحلية يومك."
+  },
+  "story": {
+    "title": "قصتنا",
+    "content": "ما بدأ كشغف عائلي مريح للقهوة والكوكيز نما ليصبح وجهة محلية للدفء والدلال. نستخدم حبوب قهوة مستدامة ونخبز كل كوكي من الصفر يومياً لضمان أن كل لحظة تقضيها معنا مصممة بعناية.",
+    "imageAlt": "القهوة والكوكيز"
+  },
+  "mission": {
+    "title": "مهمتنا",
+    "content": "خلق مساحة حيث لا تُسرع القهوة ولا تكون الكوكيز مجرد وجبات خفيفة، بل تجارب مصممة بعناية. نمزج بين التقليد والابتكار لتقديم نكهات تشعر بأنها خالدة لكنها جديدة."
+  },
+  "promise": {
+    "title": "وعدنا",
+    "content": "كل كوكي يُخبز بحب، وكل فنجان يُحضّر بدقة. نعدك بالنضارة، الأصالة، والعناية في كل ما نقدمه — لأنك تستحق الأفضل."
+  }
+}
+,
+  "auth": {
+    "login": "تسجيل الدخول",
+    "goToCart":"العودة للسلة",
+    "register": "إنشاء حساب",
+    "welcomeBack": "مرحباً بعودتك!",
+    "joinUs": "انضم إلينا اليوم",
+    "signInMessage": "سجل الدخول للوصول إلى حسابك",
+    "registerMessage": "أنشئ حساباً للبدء",
+    "name": "الاسم",
+    "email": "البريد الإلكتروني",
+      "cancel": "إلغاء",
+  "guestNotice": "لا يمكنك شراء المنتجات كزائر. يرجى تسجيل الدخول للمتابعة.",
+    "password": "كلمة المرور",
+    "enterName": "أدخل اسمك",
+    "enterEmail": "أدخل بريدك الإلكتروني",
+    "enterPassword": "أدخل كلمة المرور",
+    "createPassword": "أنشئ كلمة مرور",
+    "rememberMe": "تذكرني",
+    "forgotPassword": "نسيت كلمة المرور؟",
+    "signIn": "تسجيل الدخول",
+    "createAccount": "إنشاء حساب",
+    "or": "أو",
+    "continueGuest": "المتابعة كزائر"
+  },
+  "cart": {
+    "title": "سلة التسوق",
+    "empty": "سلة التسوق فارغة",
+    "emptyMessage": "ابدأ بإضافة بعض المنتجات اللذيذة!",
+    "browseProducts": "تصفح المنتجات",
+    "subtotal": "المجموع الجزئي",
+    "shipping": "الشحن",
+    "tax": "الضريبة",
+    "total": "المجموع الكلي",
+    "checkout": "إتمام الشراء",
+    "continueShopping": "الاستمرار في التسوق",
+    "decreaseQuantity": "تقليل الكمية",
+    "increaseQuantity": "زيادة الكمية",
+    "removeItem": "إزالة العنصر"
+  },
+  "PRODUCTS": {
+    "UI": {
+      "TAGLINE": "حلويات فاخرة",
+      "HEADER_LINE1": "اكتشف",
+      "HEADER_LINE2": "مجموعاتنا الحلوة",
+      "SUBTITLE": "استمتع باختيارنا بعناية من الشوكولاتة المصنوعة يدوياً، والبسكويت الطازج، والكعك الفاخر المصنوع من أفضل المكونات.",
+      "ADD_TO_CART": "أضف إلى السلة",
+      "STOCK": "المخزون",
+      "SKU": "رمز المنتج",
+      "CATEGORY":"الصنف",
+      "OPTIONS_AVAILABLE": "{{count}} خيارات لذيذة متوفرة",
+      "PRODUCTS_LABEL": "منتجات",
+      "SHOW_MORE": "عرض المزيد ({{count}} إضافية)",
+      "SHOW_LESS": "عرض أقل ({{count}} مخفية)",
+      "VIEW_ALL": "عرض جميع المنتجات",
+      "SEARCH_PLACEHOLDER": "ابحث عن المنتجات...",
+      "ALL_CATEGORIES": "جميع الأصناف",
+      "PRODUCTS_FOUND": "منتج تم العثور عليه",
+      "NO_PRODUCTS_FOUND": "لم يتم العثور على منتجات",
+      "NO_PRODUCTS_DESCRIPTION": "حاول تعديل معايير البحث أو التصفية",
+      "CLEAR_FILTERS": "مسح الفلاتر",
+      "OUT_OF_STOCK": "غير متوفر",
+      "DESCRIPTION": "الوصف",
+      "QUANTITY": "الكمية",
+      "TOTAL_PRICE": "السعر الإجمالي"
+    },
+    "MANAGEMENT": {
+      "ID": "الرقم",
+      "TITLE": "العنوان",
+      "UNIT": "الوحدة",
+      "UNIT_PLACEHOLDER": "مثل قطعة، علبة، شريط",
+      "ADD_UNIT": "إضافة وحدة",
+      "CATEGORIES": "الأصناف",
+      "ADD_PRODUCT": "إضافة منتج",
+      "EDIT_PRODUCT": "تعديل منتج",
+      "NAME": "الاسم",
+      "PRICE": "السعر",
+      "CATEGORY": "الصنف",
+      "DELETE_SUCCESSFULLY": "تم حذف المنتج بنجاح",
+      "DELETE_UNSUCCESSFULLY": "خطأ، لم يتم حذف المنتج",
+      "CHOOSE_PRODUCT": "اختر الصنف",
+      "ADD_PRODUCT_DIALOG": {
+        "HAS_VARIANTS": "متعدد الأحجام",
+        "CHOOSE_HAS_VARIANTS": "اختر",
+        "ADD_VARIANT": "إضافة حجم",
+        "SIZE": "الحجم",
+        "PRICE": "السعر",
+        "YES": "نعم",
+        "NO": "لا",
+        "HAS_BARCODE": "له باركود"
+      },
+      "ERROR": {
+        "NAME_REQUIRED": "اسم المنتج مطلوب",
+        "UNIT_REQUIRED": "الوحدة مطلوبة",
+        "CATEGORY_REQUIRED": "الصنف مطلوب",
+        "PRICE_REQUIRED": "السعر مطلوب",
+        "VARIANTS_REQUIRED": "يجب أن يكون هناك حجم واحد على الأقل",
+        "VARIANT_SIZE_REQUIRED": "يجب أن يحتوي كل حجم على اسم",
+        "ADDING_PRODUCT": "خطأ، لم يتم إضافة المنتج",
+        "EDITING_PRODUCT": "خطأ، لم يتم تعديل المنتج"
+      },
+      "SUCCESS": {
+        "ADDED": "تمت إضافة المنتج بنجاح",
+        "EDITED": "تم تعديل المنتج بنجاح"
+      }
+    }
+  },
+  "buttons": {
+    "add": "أضف",
+    "remove": "إزالة",
+    "increase": "زيادة",
+    "decrease": "تقليل",
+    "checkout": "إتمام الشراء"
+  }
+}

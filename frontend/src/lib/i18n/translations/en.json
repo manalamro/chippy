@@ -1,0 +1,222 @@
+{
+  "home": "Home",
+  "products": "Products",
+  "about": "aboutUs",
+  "brandName": "CHIPPY",
+  "searchButton": "Search",
+  "userProfile": "User Profile",
+  "shoppingCart": "Shopping Cart",
+  "menu": "Menu",
+  "closeMenu": "Close Menu",
+  "languageSwitch": "العربية",
+  "GREETING": "Hello",
+  "loading": "Loading...",
+  
+    "contactUs": {
+      "title": "Contact Us",
+      "subtitle": "We're here to help! Reach out to us for any inquiries about our delicious coffee, fresh cookies, or anything else.",
+      "infoTitle": "Contact Information",
+      "phone": "Phone",
+      "email": "Email",
+      "address": "Address",
+"fullAddress": "Shopping Street, Hebron, Palestine",
+      "hours": "Business Hours",
+      "weekdays": "Sat - Thu: 8 AM - 11 PM",
+      "weekend": "Fri: 2 PM - 11 PM",
+      "followUs": "Follow Us",
+      "findUs": "Find Us",
+      "map": "Map Location",
+      "formTitle": "Send Us a Message",
+      "name": "Name",
+      "namePlaceholder": "Enter your name",
+      "emailPlaceholder": "Enter your email",
+      "subject": "Subject",
+      "subjectPlaceholder": "Your message subject",
+      "message": "Message",
+      "messagePlaceholder": "Write your message here...",
+      "sendMessage": "Send Message",
+      "faqTitle": "Frequently Asked Questions",
+      "faq1Question": "How long does delivery take?",
+      "faq1Answer": "Delivery takes 30-45 minutes within the city.",
+      "faq2Question": "Do you offer bulk discounts?",
+      "faq2Answer": "Yes, we offer discounts for large orders over 10 boxes."
+    }
+  ,
+  "HERO": {
+    "TITLE_LINE1": "Enjoy",
+    "TITLE_LINE2": "Sweet Moments",
+    "SUBTITLE": "Coffee, cookies, and more\nDelivered to your doorstep",
+    "CTA_BUTTON": "Shop Now",
+    "FEATURES": {
+      "FRESH_BAKERY": "Fresh Baked Goods",
+      "FAST_DELIVERY": "Fast Delivery",
+      "PREMIUM_QUALITY": "Premium Quality"
+    },
+    "DECORATIVE": {
+      "BOTTOM_BORDER": "Decorative bottom border"
+    }
+  },
+  "myOrders": "My Orders",
+  "noOrders": "No Orders",
+  "noOrdersMessage": "You don't have any previous orders.",
+  "orderNumber": "Order",
+  "address": "Address",
+  "status": "Status",
+  "total": "Total",
+  "items": "Items",
+  "product": "Product",
+  "orderStatus": {
+    "delivered": "Delivered",
+    "shipped": "Shipped",
+    "processing": "Processing",
+    "pending": "Pending",
+    "cancelled": "Cancelled"
+  },
+
+  "MENU": {
+    "TITLE": "Our categories",
+    "CATEGORIES": {
+      "ALL": "All",
+      "COOKIES": "Cookies",
+      "COFFEE": "Coffee",
+      "PASTRIES": "Pastries",
+      "CUPCAKES": "Cupcakes",
+      "OTHERS": "Others"
+    },
+    "SEE_MORE": "See all products",
+    "ITEMS": "items",
+    "Chocolate Chip Cookies": "Chocolate Chip Cookies",
+    "Cinnamon Rolls": "Cinnamon Rolls",
+    "Vanilla Cupcakes": "Vanilla Cupcakes",
+    "Espresso Coffee": "Espresso Coffee",
+    "Strawberry Donuts": "Strawberry Donuts",
+    "Tiramisu Slice": "Tiramisu Slice"
+  },
+  "aboutUs": {
+  "title": "About Coffee & Cookies",
+  "subtitle": {
+    "part1": "Crafting delightful moments with",
+    "coffee": "artisan coffee",
+    "and": "and",
+    "cookies": "freshly baked cookies",
+    "part2": "Every sip and bite is made to slow you down, warm your heart, and sweeten your day."
+  },
+  "story": {
+    "title": "Our Story",
+    "content": "What started as a cozy family kitchen passion for coffee and cookies has grown into a local destination for warmth and indulgence. We use ethically sourced coffee beans and bake each cookie from scratch daily, ensuring every moment you spend with us feels crafted with care.",
+    "imageAlt": "Coffee and cookies"
+  },
+  "mission": {
+    "title": "Our Mission",
+    "content": "To create a space where coffee isn't rushed and cookies aren't just snacks, but both are crafted experiences. We blend tradition with innovation to bring you flavors that feel timeless yet fresh."
+  },
+  "promise": {
+    "title": "Our Promise",
+    "content": "Every cookie is baked with love, every cup brewed with precision. We promise freshness, authenticity, and care in everything we serve — because you deserve nothing less."
+  }
+}
+,
+  "auth": {
+    "login": "Login",
+    "register": "Register",
+    "welcomeBack": "Welcome back!",
+    "joinUs": "Join us today",
+    "signInMessage": "Sign in to access your account",
+    "registerMessage": "Create an account to get started",
+    "name": "Name",
+    "email": "Email",
+    "password": "Password",
+    "enterName": "Enter your name",
+    "enterEmail": "Enter your email",
+    "enterPassword": "Enter your password",
+    "createPassword": "Create a password",
+    "rememberMe": "Remember me",
+    "forgotPassword": "Forgot password?",
+    "signIn": "Sign in",
+    "createAccount": "Create Account",
+    "or": "or",
+    "goToCart":"back to cart",
+    "continueGuest": "Continue as guest",
+    "cancel": "Cancel",
+    "guestNotice": "You can't purchase items as a guest. Please log in to continue."
+  },
+  "cart": {
+    "title": "Shopping Cart",
+    "empty": "Your cart is empty",
+    "emptyMessage": "Start adding some delicious products!",
+    "browseProducts": "Browse Products",
+    "subtotal": "Subtotal",
+    "shipping": "Shipping",
+    "tax": "Tax",
+    "total": "Total",
+    "checkout": "Proceed to Checkout",
+    "continueShopping": "Continue Shopping",
+    "decreaseQuantity": "Decrease quantity",
+    "increaseQuantity": "Increase quantity",
+    "removeItem": "Remove item"
+  },
+  "PRODUCTS": {
+    "UI": {
+      "TAGLINE": "Premium Sweet Treats",
+      "HEADER_LINE1": "Discover Our",
+      "HEADER_LINE2": "Sweet Collections",
+      "SUBTITLE": "Indulge in our carefully curated selection of artisan chocolates, fresh-baked cookies, and gourmet cakes made with the finest ingredients.",
+      "ADD_TO_CART": "Add to Cart",
+      "STOCK": "Stock",
+      "SKU": "SKU",
+      "OPTIONS_AVAILABLE": "{{count}} delicious options available",
+      "PRODUCTS_LABEL": "Products",
+      "SHOW_MORE": "Show More ({{count}} more)",
+      "SHOW_LESS": "Show Less ({{count}} hidden)",
+      "VIEW_ALL": "View All Products",
+      "SEARCH_PLACEHOLDER": "Search products...",
+      "ALL_CATEGORIES": "All Categories",
+      "PRODUCTS_FOUND": "products found",
+      "NO_PRODUCTS_FOUND": "No products found",
+      "NO_PRODUCTS_DESCRIPTION": "Try adjusting your search or filter criteria",
+      "CLEAR_FILTERS": "Clear Filters",
+      "OUT_OF_STOCK": "Out of Stock"
+    },
+    "MANAGEMENT": {
+      "ID": "ID",
+      "TITLE": "Title",
+      "UNIT": "Unit",
+      "UNIT_PLACEHOLDER": "e.g. piece, box, strip",
+      "ADD_UNIT": "Add Unit",
+      "CATEGORIES": "Categories",
+      "ADD_PRODUCT": "Add Product",
+      "EDIT_PRODUCT": "Edit Product",
+      "NAME": "Name",
+      "PRICE": "Price",
+      "CATEGORY": "Category",
+      "DELETE_SUCCESSFULLY": "Product deleted successfully",
+      "DELETE_UNSUCCESSFULLY": "Error, product was not deleted",
+      "CHOOSE_PRODUCT": "Choose category",
+      "ADD_PRODUCT_DIALOG": {
+        "HAS_VARIANTS": "Multi-size",
+        "CHOOSE_HAS_VARIANTS": "Choose",
+        "ADD_VARIANT": "Add size",
+        "SIZE": "Size",
+        "PRICE": "Price",
+        "YES": "Yes",
+        "NO": "No",
+        "HAS_BARCODE": "Has barcode"
+      },
+      
+      "ERROR": {
+        "NAME_REQUIRED": "Product name is required",
+        "UNIT_REQUIRED": "Product unit is required",
+        "CATEGORY_REQUIRED": "Category name is required",
+        "PRICE_REQUIRED": "Product price is required",
+        "VARIANTS_REQUIRED": "There must be at least one variant",
+        "VARIANT_SIZE_REQUIRED": "Each size must have a name",
+        "ADDING_PRODUCT": "Error, product was not added",
+        "EDITING_PRODUCT": "Error, product was not edited"
+      },
+      "SUCCESS": {
+        "ADDED": "Product added successfully",
+        "EDITED": "Product edited successfully"
+      }
+    }
+  }
+}
