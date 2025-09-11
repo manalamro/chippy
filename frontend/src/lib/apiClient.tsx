@@ -119,5 +119,38 @@ export const adminUpdateOrderStatus = async (orderId: number, status: string) =>
   const res = await apiClient.patch(`/admin/orders/${orderId}/status`, { status });
   return res.data;
 };
+export const adminCreateProduct = async (data: any) => {
+  const res = await apiClient.post("/admin/products", data);
+  return res.data;
+};
+
+export const adminUpdateProduct = async (id: number, data: any) => {
+  const res = await apiClient.put(`/admin/products/${id}`, data);
+  return res.data;
+};
+
+export const adminDeleteProduct = async (id: number) => {
+  const res = await apiClient.delete(`/admin/products/${id}`);
+  return res.data;
+};
+
+// Categories
+export const adminCreateCategory = async (data: any) => {
+  const res = await apiClient.post("/admin/categories", data);
+  return res.data;
+};
+
+export const adminUpdateCategory = async (id: number, data: any) => {
+  const res = await apiClient.put(`/admin/categories/${id}`, data);
+  return res.data;
+};
+
+export const adminDeleteCategory = async (id: number) => {
+  const res = await apiClient.delete(`/admin/categories/${id}`);
+  return res.data;
+};
+
 
 export default apiClient;
+
+

@@ -16,28 +16,66 @@ export const createProduct = async (req: AuthRequest, res: Response): Promise<vo
       images
     } = req.body;
 
-    const result = await pool.query(
-      `INSERT INTO products (title, slug, description, price, sku, stock, category_id)
-       VALUES ($1, $2, $3, $4, $5, $6, $7)
-       RETURNING *`,
-      [title, slug, description, price, sku, stock, category_id]
-    );
+    // Start a transaction to ensure data consistency
+    const client = await pool.connect();
+    
+    try {
+      await client.query('BEGIN');
 
-    const product = result.rows[0];
+      // Insert the product
+      const productResult = await client.query(
+        `INSERT INTO products (title, slug, description, price, sku, stock, category_id)
+         VALUES ($1, $2, $3, $4, $5, $6, $7)
+         RETURNING *`,
+        [title, slug, description, price, sku, stock, category_id]
+      );
 
-    // Add images if provided
-    if (images && images.length > 0) {
-      for (const image of images) {
-        await pool.query(
-          'INSERT INTO product_images (product_id, url, alt) VALUES ($1, $2, $3)',
-          [product.id, image.url, image.alt || '']
-        );
+      const product = productResult.rows[0];
+
+      // Add images if provided
+      if (images && images.length > 0) {
+        for (const image of images) {
+          await client.query(
+            'INSERT INTO product_images (product_id, url, alt) VALUES ($1, $2, $3)',
+            [product.id, image.url, image.alt || '']
+          );
+        }
       }
+
+      await client.query('COMMIT');
+
+      // Fetch the complete product with images for response
+      const completeProductResult = await client.query(
+        `SELECT p.*, 
+                COALESCE(
+                  json_agg(
+                    json_build_object('id', pi.id, 'url', pi.url, 'alt', pi.alt)
+                  ) FILTER (WHERE pi.id IS NOT NULL), 
+                  '[]'
+                ) as images
+         FROM products p
+         LEFT JOIN product_images pi ON p.id = pi.product_id
+         WHERE p.id = $1
+         GROUP BY p.id`,
+        [product.id]
+      );
+
+      const productWithImages = completeProductResult.rows[0];
+
+      res.status(201).json({ 
+        message: 'Product created successfully', 
+        product: productWithImages 
+      });
+
+    } catch (error) {
+      await client.query('ROLLBACK');
+      throw error;
+    } finally {
+      client.release();
     }
 
-    res.status(201).json({ message: 'Product created successfully', product });
   } catch (error) {
-    console.error(error);
+    console.error('Error creating product:', error);
     res.status(500).json({ message: 'Server error' });
   }
 };
