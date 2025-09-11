@@ -1,0 +1,31 @@
+# =====================
+# Frontend (React) 
+# =====================
+frontend/node_modules/
+frontend/build/
+frontend/.env
+frontend/.env.local
+frontend/.env.development.local
+frontend/.env.test.local
+frontend/.env.production.local
+
+# =====================
+# Backend (Express/Node)
+# =====================
+backend/node_modules/
+backend/dist/
+backend/.env
+backend/logs/
+backend/npm-debug.log*
+backend/yarn-debug.log*
+backend/pnpm-debug.log*
+
+# =====================
+# Common OS / IDE / Logs
+# =====================
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.log
+*.swp
