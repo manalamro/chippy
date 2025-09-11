@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { useProductStore } from "../store/productStore";
+import { useTranslation } from "react-i18next";
 
 type ProductFormProps = {
   onClose: () => void;
@@ -36,20 +37,21 @@ const ProductForm: React.FC<ProductFormProps> = ({ onClose, onSuccess, product, 
 
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const { createProduct, updateProduct } = useProductStore();
+  const { t } = useTranslation();
 
   const validate = () => {
     const newErrors: { [key: string]: string } = {};
-    if (!title.trim()) newErrors.title = "Title is required";
-    if (!slug.trim()) newErrors.slug = "Slug is required";
-    if (!description.trim()) newErrors.description = "Description is required";
-    if (price < 0) newErrors.price = "Price cannot be negative";
-    if (stock < 0) newErrors.stock = "Stock cannot be negative";
-    if (categoryId === "") newErrors.categoryId = "Category is required";
+    if (!title.trim()) newErrors.title = t("PRODUCTS.MANAGEMENT.ERROR.NAME_REQUIRED");
+    if (!slug.trim()) newErrors.slug = t("PRODUCTS.MANAGEMENT.ERROR.SLUG_REQUIRED");
+    if (!description.trim()) newErrors.description = t("PRODUCTS.MANAGEMENT.ERROR.DESCRIPTION_REQUIRED");
+    if (price < 0) newErrors.price = t("PRODUCTS.MANAGEMENT.ERROR.PRICE_NEGATIVE");
+    if (stock < 0) newErrors.stock = t("PRODUCTS.MANAGEMENT.ERROR.STOCK_NEGATIVE");
+    if (categoryId === "") newErrors.categoryId = t("PRODUCTS.MANAGEMENT.ERROR.CATEGORY_REQUIRED");
     
     // Validate images
     images.forEach((image, index) => {
       if (image.url && !isValidUrl(image.url)) {
-        newErrors[`image_${index}`] = "Please enter a valid URL";
+        newErrors[`image_${index}`] = t("PRODUCTS.MANAGEMENT.ERROR.INVALID_URL");
       }
     });
     
@@ -91,7 +93,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ onClose, onSuccess, product, 
       onClose();
     } catch (err: any) {
       console.error(err);
-      alert(err.message || "Something went wrong!");
+      alert(err.message || t("error.generic"));
     }
   };
 
@@ -125,11 +127,11 @@ const ProductForm: React.FC<ProductFormProps> = ({ onClose, onSuccess, product, 
         exit={{ y: -50, opacity: 0 }}
       >
         <h2 className="text-2xl font-bold text-[#3E2723] mb-4">
-          {product ? "Update Product" : "Add Product"}
+          {product ? t("PRODUCTS.MANAGEMENT.EDIT_PRODUCT") : t("PRODUCTS.MANAGEMENT.ADD_PRODUCT")}
         </h2>
 
         {/* Title */}
-        <label className="block mb-1 font-semibold text-[#3E2723]">Title</label>
+        <label className="block mb-1 font-semibold text-[#3E2723]">{t("PRODUCTS.MANAGEMENT.TITLE")}</label>
         <input
           type="text"
           value={title}
@@ -139,7 +141,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ onClose, onSuccess, product, 
         {errors.title && <p className="text-red-500 text-sm mb-2">{errors.title}</p>}
 
         {/* Slug */}
-        <label className="block mb-1 font-semibold text-[#3E2723]">Slug</label>
+        <label className="block mb-1 font-semibold text-[#3E2723]">{t("slug")}</label>
         <input
           type="text"
           value={slug}
@@ -149,7 +151,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ onClose, onSuccess, product, 
         {errors.slug && <p className="text-red-500 text-sm mb-2">{errors.slug}</p>}
 
         {/* Description */}
-        <label className="block mb-1 font-semibold text-[#3E2723]">Description</label>
+        <label className="block mb-1 font-semibold text-[#3E2723]">{t("PRODUCTS.UI.DESCRIPTION")}</label>
         <textarea
           value={description}
           onChange={(e) => setDescription(e.target.value)}
@@ -159,7 +161,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ onClose, onSuccess, product, 
         {errors.description && <p className="text-red-500 text-sm mb-2">{errors.description}</p>}
 
         {/* Price */}
-        <label className="block mb-1 font-semibold text-[#3E2723]">Price</label>
+        <label className="block mb-1 font-semibold text-[#3E2723]">{t("price")}</label>
         <input
           type="number"
           value={price}
@@ -171,7 +173,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ onClose, onSuccess, product, 
         {errors.price && <p className="text-red-500 text-sm mb-2">{errors.price}</p>}
 
         {/* Stock */}
-        <label className="block mb-1 font-semibold text-[#3E2723]">Stock</label>
+        <label className="block mb-1 font-semibold text-[#3E2723]">{t("PRODUCTS.UI.STOCK")}</label>
         <input
           type="number"
           value={stock}
@@ -183,13 +185,13 @@ const ProductForm: React.FC<ProductFormProps> = ({ onClose, onSuccess, product, 
         {errors.stock && <p className="text-red-500 text-sm mb-2">{errors.stock}</p>}
 
         {/* Category */}
-        <label className="block mb-1 font-semibold text-[#3E2723]">Category</label>
+        <label className="block mb-1 font-semibold text-[#3E2723]">{t("category")}</label>
         <select
           value={categoryId}
           onChange={(e) => setCategoryId(Number(e.target.value))}
           className={`w-full p-2 mb-4 border rounded ${errors.categoryId ? "border-red-500" : ""}`}
         >
-          <option value="">Select Category</option>
+          <option value="">{t("PRODUCTS.MANAGEMENT.CHOOSE_PRODUCT")}</option>
           {categories.map((cat) => (
             <option key={cat.id} value={cat.id}>
               {cat.name}
@@ -200,24 +202,24 @@ const ProductForm: React.FC<ProductFormProps> = ({ onClose, onSuccess, product, 
 
         {/* Images Section */}
         <div className="mb-4">
-          <label className="block mb-2 font-semibold text-[#3E2723]">Product Images</label>
+          <label className="block mb-2 font-semibold text-[#3E2723]">{t("PRODUCTS.UI.IMAGES")}</label>
           
           {images.map((image, index) => (
             <div key={index} className="mb-3 p-3 border rounded bg-gray-50">
               <div className="flex justify-between items-center mb-2">
-                <span className="text-sm font-medium text-gray-600">Image {index + 1}</span>
+                <span className="text-sm font-medium text-gray-600">{t("PRODUCTS.UI.IMAGE")} {index + 1}</span>
                 <button
                   type="button"
                   onClick={() => removeImageField(index)}
                   className="text-red-500 hover:text-red-700 text-sm"
                 >
-                  Remove
+                  {t("buttons.remove")}
                 </button>
               </div>
               
               <div className="space-y-2">
                 <div>
-                  <label className="block text-sm text-gray-600 mb-1">Image URL *</label>
+                  <label className="block text-sm text-gray-600 mb-1">{t("PRODUCTS.UI.IMAGE_URL")} *</label>
                   <input
                     type="url"
                     value={image.url}
@@ -233,12 +235,12 @@ const ProductForm: React.FC<ProductFormProps> = ({ onClose, onSuccess, product, 
                 </div>
                 
                 <div>
-                  <label className="block text-sm text-gray-600 mb-1">Alt Text</label>
+                  <label className="block text-sm text-gray-600 mb-1">{t("PRODUCTS.UI.ALT_TEXT")}</label>
                   <input
                     type="text"
                     value={image.alt}
                     onChange={(e) => updateImageField(index, 'alt', e.target.value)}
-                    placeholder="Description of the image"
+                    placeholder={t("PRODUCTS.UI.ALT_PLACEHOLDER")}
                     className="w-full p-2 border rounded text-sm"
                   />
                 </div>
@@ -251,7 +253,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ onClose, onSuccess, product, 
             onClick={addImageField}
             className="px-3 py-2 text-sm bg-gray-200 hover:bg-gray-300 rounded border-dashed border-2 border-gray-300 w-full"
           >
-            + Add Image
+            + {t("PRODUCTS.UI.ADD_IMAGE")}
           </button>
         </div>
 
@@ -262,13 +264,13 @@ const ProductForm: React.FC<ProductFormProps> = ({ onClose, onSuccess, product, 
             onClick={onClose}
             className="px-4 py-2 rounded bg-gray-300 hover:bg-gray-400"
           >
-            Cancel
+            {t("cancel")}
           </button>
           <button
             type="submit"
             className="px-4 py-2 rounded bg-gradient-to-r from-[#A97155] to-[#D9A441] text-white"
           >
-            {product ? "Update" : "Add"}
+            {product ? t("update") : t("add")}
           </button>
         </div>
       </motion.form>
