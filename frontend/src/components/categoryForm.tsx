@@ -1,7 +1,6 @@
-// src/pages/admin/components/CategoryForm.tsx
 import React, { useState } from "react";
 import { motion } from "framer-motion";
-import axios from "axios";
+import { useProductStore } from "../store/productStore";
 
 type CategoryFormProps = {
   onClose: () => void;
@@ -12,29 +11,33 @@ type CategoryFormProps = {
 const CategoryForm: React.FC<CategoryFormProps> = ({ onClose, onSuccess, category }) => {
   const [name, setName] = useState(category?.name || "");
   const [slug, setSlug] = useState(category?.slug || "");
+  const [errors, setErrors] = useState<{ [key: string]: string }>({});
+  
+  const { createCategory, updateCategory } = useProductStore();
+
+  const validate = () => {
+    const newErrors: { [key: string]: string } = {};
+    if (!name.trim()) newErrors.name = "Name is required";
+    if (!slug.trim()) newErrors.slug = "Slug is required";
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const token = localStorage.getItem("token");
+    if (!validate()) return;
+
     try {
       if (category) {
-        await axios.put(
-          `/admin/categories/${category.id}`,
-          { name, slug },
-          { headers: { Authorization: `Bearer ${token}` } }
-        );
+        await updateCategory(category.id, { name, slug });
       } else {
-        await axios.post(
-          `/admin/categories`,
-          { name, slug },
-          { headers: { Authorization: `Bearer ${token}` } }
-        );
+        await createCategory({ name, slug });
       }
       onSuccess();
       onClose();
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
-      alert("Something went wrong!");
+      alert(err.message || "Something went wrong!");
     }
   };
 
@@ -56,22 +59,27 @@ const CategoryForm: React.FC<CategoryFormProps> = ({ onClose, onSuccess, categor
           {category ? "Update Category" : "Add Category"}
         </h2>
 
+        <label className="block mb-1 font-semibold text-[#3E2723]">Name</label>
         <input
           type="text"
           placeholder="Name"
           value={name}
           onChange={(e) => setName(e.target.value)}
-          className="w-full p-2 mb-3 border rounded"
+          className={`w-full p-2 mb-3 border rounded ${errors.name ? "border-red-500" : ""}`}
           required
         />
+        {errors.name && <p className="text-red-500 text-sm mb-2">{errors.name}</p>}
+
+        <label className="block mb-1 font-semibold text-[#3E2723]">Slug</label>
         <input
           type="text"
           placeholder="Slug"
           value={slug}
           onChange={(e) => setSlug(e.target.value)}
-          className="w-full p-2 mb-4 border rounded"
+          className={`w-full p-2 mb-4 border rounded ${errors.slug ? "border-red-500" : ""}`}
           required
         />
+        {errors.slug && <p className="text-red-500 text-sm mb-2">{errors.slug}</p>}
 
         <div className="flex justify-end gap-3">
           <button

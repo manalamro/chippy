@@ -163,7 +163,7 @@ const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({ order, onClose })
 );
 
 const AdminPage: React.FC = () => {
-  const { products, categories, fetchProducts, fetchCategories } = useProductStore();
+  const { products, categories, fetchProducts, fetchCategories, deleteProduct, deleteCategory } = useProductStore();
   const { orders, fetchAdminOrders } = useOrdersStore();
   const logoutUser = useUserStore((state) => state.logoutUser);
 
@@ -187,10 +187,7 @@ const AdminPage: React.FC = () => {
       message: `Are you sure you want to delete product "${title}"? This action cannot be undone.`,
       onConfirm: async () => {
         try {
-          await fetch(`/admin/products/${id}`, {
-            method: "DELETE",
-            headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-          });
+          await deleteProduct(id);
           fetchProducts();
         } catch (err) {
           console.error(err);
@@ -205,11 +202,9 @@ const AdminPage: React.FC = () => {
       message: `Are you sure you want to delete category "${name}"? All products in this category will be moved to "Uncategorized".`,
       onConfirm: async () => {
         try {
-          await fetch(`/admin/categories/${id}`, {
-            method: "DELETE",
-            headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-          });
+          await deleteCategory(id);
           fetchCategories();
+          fetchProducts();
         } catch (err) {
           console.error(err);
         }
@@ -228,7 +223,7 @@ const AdminPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#FAF3E0] flex">
+    <div className="min-h-screen  flex">
       {/* Sidebar */}
       <div className="fixed left-0 top-0 h-full w-20 flex flex-col items-center bg-[#A97155] shadow-lg py-6 z-10">
         <div className="flex-1"></div>
@@ -290,8 +285,8 @@ const AdminPage: React.FC = () => {
                           onClick={() => { setEditProductId(prod.id); setShowProductForm(true); }}
                           title="Edit"
                         >
-                          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v12a2 2 0 002 2h12a2 2 0 002-2v-5M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" />
                           </svg>
                         </button>
                         <button
@@ -299,8 +294,8 @@ const AdminPage: React.FC = () => {
                           onClick={() => handleDeleteProduct(prod.id, prod.title)}
                           title="Delete"
                         >
-                          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6M1 7h22M10 3h4a2 2 0 012 2v2H8V5a2 2 0 012-2z" />
                           </svg>
                         </button>
                       </div>
@@ -357,8 +352,8 @@ const AdminPage: React.FC = () => {
                           onClick={() => { setEditCategoryId(cat.id); setShowCategoryForm(true); }}
                           title="Edit"
                         >
-                          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v12a2 2 0 002 2h12a2 2 0 002-2v-5M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" />
                           </svg>
                         </button>
                         <button
@@ -366,8 +361,8 @@ const AdminPage: React.FC = () => {
                           onClick={() => handleDeleteCategory(cat.id, cat.name)}
                           title="Delete"
                         >
-                          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6M1 7h22M10 3h4a2 2 0 012 2v2H8V5a2 2 0 012-2z" />
                           </svg>
                         </button>
                       </div>
@@ -486,14 +481,10 @@ const AdminPage: React.FC = () => {
           <StatusModal
             orderId={statusModalOrder.id}
             currentStatus={statusModalOrder.status}
-            onUpdate={async (newStatus) => {
-              try {
-                await adminUpdateOrderStatus(statusModalOrder.id, newStatus);
-                fetchAdminOrders();
-              } catch (err) {
-                console.error(err);
-              }
-              setStatusModalOrder(null);
+            onUpdate={(newStatus) => {
+              adminUpdateOrderStatus(statusModalOrder.id, newStatus)
+                .then(() => fetchAdminOrders())
+                .finally(() => setStatusModalOrder(null));
             }}
             onClose={() => setStatusModalOrder(null)}
           />

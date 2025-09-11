@@ -1,5 +1,10 @@
 import { create } from "zustand";
-import { createOrder, fetchUserOrders,adminFetchOrders } from "../lib/apiClient";
+import { 
+  createOrder, 
+  fetchUserOrders, 
+  adminFetchOrders,
+  adminUpdateOrderStatus 
+} from "../lib/apiClient";
 
 interface Order {
   id: number;
@@ -8,8 +13,8 @@ interface Order {
   payment_status?: string;
   created_at: string;
   address: any;
-  user_name:string,
-  user_email:string,
+  user_name: string;
+  user_email: string;
   items: any[];
 }
 
@@ -25,9 +30,9 @@ interface OrdersStore {
   loading: boolean;
   error?: string;
   fetchOrders: () => Promise<void>;
-  fetchAdminOrders: () => Promise<void>; // <-- add this
-
+  fetchAdminOrders: (params?: { page?: number; limit?: number; status?: string }) => Promise<void>;
   addOrder: (addressId: number, payment: PaymentData) => Promise<void>;
+  updateOrderStatus: (orderId: number, status: string) => Promise<void>;
 }
 
 export const useOrdersStore = create<OrdersStore>((set) => ({
@@ -45,10 +50,12 @@ export const useOrdersStore = create<OrdersStore>((set) => ({
     }
   },
 
-  fetchAdminOrders: async () => {
+  fetchAdminOrders: async (params?: { page?: number; limit?: number; status?: string }) => {
     set({ loading: true, error: undefined });
     try {
-      const orders = await adminFetchOrders(); // fetch all orders for admin
+      const response = await adminFetchOrders(params);
+      // Extract orders from the response based on your backend structure
+      const orders = response.orders || response;
       set({ orders, loading: false });
     } catch (err: any) {
       set({ error: err.message, loading: false });
@@ -64,4 +71,21 @@ export const useOrdersStore = create<OrdersStore>((set) => ({
       set({ error: err.message, loading: false });
     }
   },
+
+  updateOrderStatus: async (orderId, status) => {
+    set({ loading: true, error: undefined });
+    try {
+      await adminUpdateOrderStatus(orderId, status);
+      // Update the order in the local state
+      set((state) => ({
+        orders: state.orders.map(order => 
+          order.id === orderId ? { ...order, status } : order
+        ),
+        loading: false
+      }));
+    } catch (err: any) {
+      set({ error: err.message, loading: false });
+      throw err; // Re-throw to handle in the component
+    }
+  }
 }));

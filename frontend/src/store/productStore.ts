@@ -1,5 +1,15 @@
 import { create } from 'zustand';
-import { getProducts, getProductBySlug, getCategories } from '../lib/apiClient';
+import { 
+  getProducts, 
+  getProductBySlug, 
+  getCategories,
+  adminCreateProduct,
+  adminUpdateProduct,
+  adminDeleteProduct,
+  adminCreateCategory,
+  adminUpdateCategory,
+  adminDeleteCategory
+} from '../lib/apiClient';
 import type { Product } from '../types/product';
 
 export interface Category {
@@ -20,11 +30,18 @@ interface ProductState {
   fetchProducts: (categorySlug?: string, search?: string) => Promise<void>;
   fetchProductBySlug: (slug: string) => Promise<void>;
   fetchCategories: () => Promise<void>;
-  clearSelectedProduct: () => void; // ✅ إضافة دالة لمسح المنتج المحدد
-
+  clearSelectedProduct: () => void;
+  
+  // Admin functions
+  createProduct: (productData: any) => Promise<void>;
+  updateProduct: (id: number, productData: any) => Promise<void>;
+  deleteProduct: (id: number) => Promise<void>;
+  createCategory: (categoryData: any) => Promise<void>;
+  updateCategory: (id: number, categoryData: any) => Promise<void>;
+  deleteCategory: (id: number) => Promise<void>;
 }
 
-export const useProductStore = create<ProductState>((set) => ({
+export const useProductStore = create<ProductState>((set, get) => ({
   products: [],
   selectedProduct: undefined,
   categories: [],
@@ -46,14 +63,11 @@ export const useProductStore = create<ProductState>((set) => ({
   },
   
   fetchProductBySlug: async (slug: string) => {
-    console.log('🏪 Store: Starting fetchProductBySlug for:', slug);
     set({ loading: true, error: undefined });
     try {
       const product = await getProductBySlug(slug);
-      console.log('🏪 Store: Product fetched successfully:', product);
       set({ selectedProduct: product, loading: false });
     } catch (err: any) {
-      console.error('🏪 Store: Error in fetchProductBySlug:', err);
       set({ error: err.message || 'Failed to fetch product', loading: false });
     }
   },
@@ -67,8 +81,82 @@ export const useProductStore = create<ProductState>((set) => ({
       set({ error: err.message || 'Failed to fetch categories', loading: false });
     }
   },
+
   clearSelectedProduct: () => {
-    set({ selectedProduct: undefined }); // ✅ مسح المنتج المحدد عند الخروج من الصفحة
+    set({ selectedProduct: undefined });
   },
 
+  // Admin product functions
+  createProduct: async (productData: any) => {
+    set({ loading: true, error: undefined });
+    try {
+      await adminCreateProduct(productData);
+      // Refresh products after creation
+      await get().fetchProducts();
+    } catch (err: any) {
+      set({ error: err.message || 'Failed to create product', loading: false });
+      throw err;
+    }
+  },
+
+  updateProduct: async (id: number, productData: any) => {
+    set({ loading: true, error: undefined });
+    try {
+      await adminUpdateProduct(id, productData);
+      // Refresh products after update
+      await get().fetchProducts();
+    } catch (err: any) {
+      set({ error: err.message || 'Failed to update product', loading: false });
+      throw err;
+    }
+  },
+
+  deleteProduct: async (id: number) => {
+    set({ loading: true, error: undefined });
+    try {
+      await adminDeleteProduct(id);
+      // Refresh products after deletion
+      await get().fetchProducts();
+    } catch (err: any) {
+      set({ error: err.message || 'Failed to delete product', loading: false });
+      throw err;
+    }
+  },
+
+  // Admin category functions
+  createCategory: async (categoryData: any) => {
+    set({ loading: true, error: undefined });
+    try {
+      await adminCreateCategory(categoryData);
+      // Refresh categories after creation
+      await get().fetchCategories();
+    } catch (err: any) {
+      set({ error: err.message || 'Failed to create category', loading: false });
+      throw err;
+    }
+  },
+
+  updateCategory: async (id: number, categoryData: any) => {
+    set({ loading: true, error: undefined });
+    try {
+      await adminUpdateCategory(id, categoryData);
+      // Refresh categories after update
+      await get().fetchCategories();
+    } catch (err: any) {
+      set({ error: err.message || 'Failed to update category', loading: false });
+      throw err;
+    }
+  },
+
+  deleteCategory: async (id: number) => {
+    set({ loading: true, error: undefined });
+    try {
+      await adminDeleteCategory(id);
+      // Refresh categories after deletion
+      await get().fetchCategories();
+    } catch (err: any) {
+      set({ error: err.message || 'Failed to delete category', loading: false });
+      throw err;
+    }
+  }
 }));
