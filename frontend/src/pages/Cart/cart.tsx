@@ -18,11 +18,12 @@ const Cart: React.FC<CartProps> = ({ onCheckout }) => {
 
   // Calculate totals - use backend total if available, otherwise calculate frontend
   const subtotal = cart?.total || items.reduce((total, item) => {
-    const price = item.unit_price || item.product.price;
+    const price = Number(item.unit_price ?? item.product.price);
     return total + (price * item.quantity);
   }, 0);
   
-  const total = subtotal ;
+
+  const total = subtotal;
 
   // Fetch cart on component mount
   useEffect(() => {
@@ -33,7 +34,23 @@ const Cart: React.FC<CartProps> = ({ onCheckout }) => {
     }
   }, [user, fetchCart]);
 
+  // Update quantity with stock check
   const handleUpdateQuantity = async (itemId: string, newQuantity: number) => {
+    const item = items.find(i => i.id === itemId);
+    if (!item) return;
+
+    // Prevent exceeding stock
+    if (item.product.stock !== undefined && newQuantity > item.product.stock) {
+      alert(`⚠️ Cannot add more than ${item.product.stock} items for "${item.product.title}"`);
+      return;
+    }
+
+    // Prevent reducing below 1
+    if (newQuantity < 1) {
+      alert(`⚠️ Quantity cannot be less than 1`);
+      return;
+    }
+
     try {
       await updateCartItemQuantity(itemId, newQuantity);
     } catch (error) {
@@ -50,14 +67,11 @@ const Cart: React.FC<CartProps> = ({ onCheckout }) => {
   };
 
   const handleCheckout = () => {
-    // Check for token in localStorage as backup if token from store is not available
     const authToken = token || localStorage.getItem('token');
-    
+
     if (!authToken) {
-      // Redirect to auth if no token found
       navigate("/auth", { state: { redirectTo: "/checkout" } });
     } else {
-      // User is authenticated, proceed to checkout
       alert(`Hello ${user?.name || 'User'}! Proceeding to checkout...`);
       onCheckout();
       navigate("/checkout");
@@ -83,16 +97,6 @@ const Cart: React.FC<CartProps> = ({ onCheckout }) => {
       <div className="max-w-4xl mx-auto">
         <h1 className="text-3xl font-bold text-amber-900 mb-8">{t("cart.title")}</h1>
 
-        {/* Error Display */}
-        {error && (
-          <div className="mb-6 bg-red-50 border border-red-200 rounded-lg p-4">
-            <div className="flex items-center">
-              <AlertCircle className="h-5 w-5 text-red-400 mr-2" />
-              <p className="text-red-800">{error}</p>
-            </div>
-          </div>
-        )}
-
         {items.length === 0 ? (
           <div className="text-center py-12 bg-white rounded-lg shadow">
             <ShoppingBag className="mx-auto h-12 w-12 text-amber-400" />
@@ -108,11 +112,11 @@ const Cart: React.FC<CartProps> = ({ onCheckout }) => {
               <div className="px-4 py-5 sm:p-6">
                 <ul className="-my-6 divide-y divide-gray-200">
                   {items.map(item => {
-                    const itemPrice = item.unit_price || item.product.price;
-                    const itemTotal = itemPrice * item.quantity;
+                   const itemPrice = Number(item.unit_price ?? item.product.price);
+                   const itemTotal = itemPrice * item.quantity;
                     const isAtStockLimit = item.product.stock !== undefined && item.quantity >= item.product.stock;
                     const hasExceededStock = item.product.stock !== undefined && item.product.stock < item.quantity;
-                    
+
                     return (
                       <li key={item.id} className="py-6 flex">
                         <div className="flex-shrink-0 w-24 h-24 rounded-md overflow-hidden">
@@ -128,26 +132,24 @@ const Cart: React.FC<CartProps> = ({ onCheckout }) => {
                             <p className='mr-4'>${itemTotal.toFixed(2)}</p>
                           </div>
                           <p className="mt-1 text-sm text-amber-900">{item.product.category?.name}</p>
-                          
-                          {/* Stock warnings and messages */}
+
+                          {/* Stock warnings */}
                           {hasExceededStock && (
                             <p className="mt-1 text-xs text-red-600 font-medium">
                               ⚠️ Only {item.product.stock} in stock - please reduce quantity
                             </p>
                           )}
-                          
                           {isAtStockLimit && !hasExceededStock && (
                             <p className="mt-1 text-xs text-orange-600">
                               📦 Maximum stock limit reached ({item.product.stock} available)
                             </p>
                           )}
-                          
                           {item.product.stock !== undefined && item.product.stock > 0 && !isAtStockLimit && !hasExceededStock && (
                             <p className="mt-1 text-xs text-gray-500">
                               {item.product.stock - item.quantity} more available
                             </p>
                           )}
-                          
+
                           <div className="flex-1 flex items-end justify-between text-sm mt-2">
                             <div className="flex flex-col">
                               <div className="flex items-center border rounded-md border-gray-200">
@@ -163,7 +165,7 @@ const Cart: React.FC<CartProps> = ({ onCheckout }) => {
                                 <button 
                                   onClick={() => handleUpdateQuantity(item.id, item.quantity + 1)} 
                                   className="px-2 py-1 text-amber-950 hover:text-amber-800 disabled:opacity-50 hover:bg-gray-50"
-                                  disabled={loading || isAtStockLimit}
+                                  disabled={loading || (item.product.stock !== undefined && item.quantity >= item.product.stock)}
                                   title={
                                     isAtStockLimit 
                                       ? `Maximum stock limit reached (${item.product.stock} available)`
@@ -173,15 +175,14 @@ const Cart: React.FC<CartProps> = ({ onCheckout }) => {
                                   <Plus size={16} />
                                 </button>
                               </div>
-                              
-                              {/* Additional message when plus button is disabled */}
+
                               {isAtStockLimit && (
                                 <p className="mt-1 text-xs text-gray-500 text-center">
                                   Can't add more - max stock reached
                                 </p>
                               )}
                             </div>
-                            
+
                             <button 
                               onClick={() => handleRemoveItem(item.id)} 
                               className="font-medium text-red-600 hover:text-red-500 disabled:opacity-50 p-1 rounded hover:bg-red-50"
@@ -199,8 +200,6 @@ const Cart: React.FC<CartProps> = ({ onCheckout }) => {
               </div>
 
               <div className="border-t border-gray-200 px-4 py-5 sm:px-6">
-               
-              
                 <div className="flex justify-between text-lg font-bold text-amber-900 mt-3 pt-3 border-t border-gray-200">
                   <p>{t('cart.total')}</p>
                   <p>${total.toFixed(2)}</p>

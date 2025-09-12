@@ -12,6 +12,7 @@ const Header = () => {
   const { t, i18n } = useTranslation();
   const { cart } = useCartStore();
   const logoutUser = useUserStore((state) => state.logoutUser); // ✅ Get logout function
+  const user = useUserStore((state) => state.user); // ✅ Get user info
   const langDropdownRef = useRef<HTMLDivElement>(null);
   const userDropdownRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
@@ -64,43 +65,46 @@ const Header = () => {
             ${i18n.language === "ar" ? "left-0" : "right-0"}
           `}
         >
-          {/* Login */}
-          <button
-            onClick={() => {
-              setIsUserDropdownOpen(false);
-              navigate("/auth");
-            }}
-            className={`block w-full px-4 py-2 hover:bg-[#F6C1B1]/20 transition-colors ${
-              i18n.language === "ar" ? "text-right" : "text-left"
-            }`}
-          >
-            {t("login", { defaultValue: "Login" })}
-          </button>
+          {!user && (
+            <button
+              onClick={() => {
+                setIsUserDropdownOpen(false);
+                navigate("/auth");
+              }}
+              className={`block w-full px-4 py-2 hover:bg-[#F6C1B1]/20 transition-colors ${
+                i18n.language === "ar" ? "text-right" : "text-left"
+              }`}
+            >
+              {t("login", { defaultValue: "Login" })}
+            </button>
+          )}
 
-          {/* My Orders */}
-          <Link
-            to="/orders"
-            className={`block w-full px-4 py-2 hover:bg-[#F6C1B1]/20 transition-colors ${
-              i18n.language === "ar" ? "text-right" : "text-left"
-            }`}
-            onClick={() => setIsUserDropdownOpen(false)}
-          >
-            {t("myOrders", { defaultValue: "My Orders" })}
-          </Link>
+          {user && (
+            <>
+              <Link
+                to="/orders"
+                className={`block w-full px-4 py-2 hover:bg-[#F6C1B1]/20 transition-colors ${
+                  i18n.language === "ar" ? "text-right" : "text-left"
+                }`}
+                onClick={() => setIsUserDropdownOpen(false)}
+              >
+                {t("myOrders", { defaultValue: "My Orders" })}
+              </Link>
 
-          {/* Logout */}
-          <button
-            onClick={() => {
-              logoutUser(); // ✅ Call logout from userStore
-              setIsUserDropdownOpen(false);
-              navigate("/");
-            }}
-            className={`block w-full px-4 py-2 hover:bg-[#F6C1B1]/20 transition-colors ${
-              i18n.language === "ar" ? "text-right" : "text-left"
-            }`}
-          >
-            {t("logout", { defaultValue: "Logout" })}
-          </button>
+              <button
+                onClick={() => {
+                  logoutUser();
+                  setIsUserDropdownOpen(false);
+                  navigate("/");
+                }}
+                className={`block w-full px-4 py-2 hover:bg-[#F6C1B1]/20 transition-colors ${
+                  i18n.language === "ar" ? "text-right" : "text-left"
+                }`}
+              >
+                {t("logout", { defaultValue: "Logout" })}
+              </button>
+            </>
+          )}
         </div>
       )}
     </div>

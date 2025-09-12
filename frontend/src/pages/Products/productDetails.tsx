@@ -4,13 +4,12 @@ import { useProductStore } from '../../store/productStore';
 import { useCartStore } from '../../store/cartStore';
 import { useUserStore } from '../../store/userStore';
 import { useTranslation } from 'react-i18next';
-import { CheckCircle } from 'lucide-react';
 
 const ProductDetail: React.FC = () => {
   const { t } = useTranslation();
   const { slug } = useParams<{ slug: string }>();
   const { selectedProduct, fetchProductBySlug, loading, clearSelectedProduct } = useProductStore();
-  const { addItemToCart } = useCartStore();
+  const { addItemToCart, cart } = useCartStore(); // cart مضافة هون
   const { user } = useUserStore();
 
   useEffect(() => {
@@ -21,6 +20,16 @@ const ProductDetail: React.FC = () => {
   const handleAddToCart = async () => {
     if (!selectedProduct) return;
 
+    // تحقق من الكمية الموجودة بالسلة
+    const existingItem = cart?.items.find((item) => item.product.id === selectedProduct.id);
+    const currentQty = existingItem ? existingItem.quantity : 0;
+
+    // منع تجاوز المخزون
+    if (selectedProduct.stock !== undefined && currentQty >= selectedProduct.stock) {
+      alert(t('PRODUCTS.UI.STOCK_LIMIT_REACHED', 'لقد وصلت للحد الأقصى من هذا المنتج في السلة'));
+      return;
+    }
+
     const guestCartId = localStorage.getItem('guest_cart_id');
     const cartId = user?.id ? String(user.id) : guestCartId || undefined;
 
@@ -30,6 +39,7 @@ const ProductDetail: React.FC = () => {
       price: selectedProduct.price,
       images: selectedProduct.images,
       category: { name: selectedProduct.category_name || '' },
+      stock: selectedProduct.stock,
     };
 
     await addItemToCart(selectedProduct.id, 1, productForCart, cartId);
