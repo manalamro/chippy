@@ -13,7 +13,7 @@ const ProductsList: React.FC = () => {
   const [addedToCart, setAddedToCart] = useState<number | null>(null);
 
   const { products, categories, fetchProducts, fetchCategories, loading } = useProductStore();
-  const { addItemToCart, fetchCart } = useCartStore();
+  const { addItemToCart, fetchCart, cart } = useCartStore(); // cart مضافة هون
   const { user } = useUserStore();
   const navigate = useNavigate();
 
@@ -33,6 +33,16 @@ const ProductsList: React.FC = () => {
 
   const handleAddToCart = async (product: any) => {
     try {
+      // تحقق من الكمية الموجودة بالسلة
+      const existingItem = cart?.items.find((item) => item.product.id === product.id);
+      const currentQty = existingItem ? existingItem.quantity : 0;
+
+      // منع تجاوز المخزون
+      if (product.stock !== undefined && currentQty >= product.stock) {
+        alert(t('PRODUCTS.UI.STOCK_LIMIT_REACHED', 'لقد وصلت للحد الأقصى من هذا المنتج في السلة'));
+        return;
+      }
+
       const guestCartId = localStorage.getItem('guest_cart_id');
       const cartId = userIdStr || guestCartId || undefined;
 
@@ -42,6 +52,7 @@ const ProductsList: React.FC = () => {
         price: product.price,
         images: product.images,
         category: { name: product.category_name || '' },
+        stock: product.stock, 
       };
 
       await addItemToCart(product.id, 1, productForCart, cartId);
@@ -134,8 +145,11 @@ const ProductsList: React.FC = () => {
                     <button
                       className="px-4 py-2 rounded-lg text-sm font-medium bg-[#D9A441] hover:bg-[#c19038] text-white transition-all duration-200"
                       onClick={() => handleAddToCart(product)}
+                      disabled={product.stock === 0}
                     >
-                      {t('PRODUCTS.UI.ADD_TO_CART') || 'إضافة للسلة'}
+                      {product.stock === 0
+                        ? t('PRODUCTS.UI.OUT_OF_STOCK', 'Out of Stock')
+                        : t('PRODUCTS.UI.ADD_TO_CART') || 'إضافة للسلة'}
                     </button>
                   </div>
                 </div>
