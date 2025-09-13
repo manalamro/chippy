@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from "react-i18next";
-import { Globe } from "lucide-react";
+import { Globe, AlertCircle, RefreshCw, CheckCircle, Eye, EyeOff } from "lucide-react";
 import { useUserStore } from "../../store/userStore";
 import { useCartStore } from "../../store/cartStore";
 import { useNavigate } from "react-router-dom";
+import { getUserFriendlyError } from "../../lib/errorUtils";
 
 const AuthPage: React.FC = () => {
   const { t, i18n } = useTranslation();
@@ -12,6 +13,8 @@ const AuthPage: React.FC = () => {
   const [showGuestModal, setShowGuestModal] = useState(false);
   const navigate = useNavigate();
   const [isCheckingAuth, setIsCheckingAuth] = useState(true);
+  const [authError, setAuthError] = useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
   const [loginEmail, setLoginEmail] = useState("");
   const [loginPassword, setLoginPassword] = useState("");
@@ -44,6 +47,7 @@ const AuthPage: React.FC = () => {
         } catch (error) {
           console.error('Token validation failed:', error);
           localStorage.removeItem('token');
+          setAuthError(t('error.generic'));
         }
       } else if (user) {
         redirectUser(user);
@@ -51,13 +55,27 @@ const AuthPage: React.FC = () => {
       setIsCheckingAuth(false);
     };
     checkAuth();
-  }, []);
+  }, [t]);
 
   useEffect(() => {
     if (user) {
       redirectUser(user);
     }
   }, [user]);
+
+  // مسح رسالة النجاح عند وجود خطأ
+  useEffect(() => {
+    if (error) {
+      setSuccessMessage(null);
+      setAuthError(getUserFriendlyError(error, t));
+    }
+  }, [error, t]);
+
+  // مسح الرسائل عند تغيير التبويب
+  useEffect(() => {
+    setAuthError(null);
+    setSuccessMessage(null);
+  }, [isLogin]);
 
   const redirectUser = (userData: any) => {
     cartStore.fetchCart(String(userData.id));
@@ -74,6 +92,12 @@ const AuthPage: React.FC = () => {
     navigate("/cart");
   };
 
+  const handleRetry = () => {
+    setAuthError(null);
+    setSuccessMessage(null);
+  };
+
+
   // Updated toggleLanguage to save in localStorage
   const toggleLanguage = () => {
     const newLang = i18n.language === "en" ? "ar" : "en";
@@ -84,18 +108,48 @@ const AuthPage: React.FC = () => {
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    await loginUser(loginEmail, loginPassword);
+    setAuthError(null);
+    setSuccessMessage(null);
+    
+    try {
+      await loginUser(loginEmail, loginPassword);
+      // التحقق من عدم وجود خطأ قبل عرض رسالة النجاح
+      if (!error && !authError) {
+        setSuccessMessage(t('auth.loginSuccess') || 'تم تسجيل الدخول بنجاح!');
+      }
+    } catch (err: any) {
+      console.error('Login failed:', err);
+      setAuthError(getUserFriendlyError(err, t));
+    }
   };
 
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
-    await signupUser(signupName, signupEmail, signupPassword);
+    setAuthError(null);
+    setSuccessMessage(null);
+    
+    try {
+      await signupUser(signupName, signupEmail, signupPassword);
+      // التحقق من عدم وجود خطأ قبل عرض رسالة النجاح
+      if (!error && !authError) {
+        setSuccessMessage(t('auth.signupSuccess') || 'تم إنشاء الحساب بنجاح!');
+      }
+    } catch (err: any) {
+      console.error('Signup failed:', err);
+      setAuthError(getUserFriendlyError(err, t));
+    }
   };
 
   if (isCheckingAuth) {
     return (
       <div className="min-h-screen flex items-center justify-center" style={{ background: 'linear-gradient(to bottom right, #FAF3E0, #FDFBF7)' }}>
-        <div className="text-lg" style={{ color: '#3E2723' }}>Checking authentication...</div>
+        <div className="text-center">
+          <div className="relative">
+            <div className="animate-spin rounded-full h-12 w-12 border-4 border-[#7B4B27]/20 border-t-[#7B4B27] mx-auto mb-4"></div>
+            <div className="absolute inset-0 rounded-full h-12 w-12 border-4 border-transparent border-r-[#7B4B27]/40 mx-auto animate-spin" style={{animationDirection: 'reverse', animationDuration: '1.5s'}}></div>
+          </div>
+          <p className="text-lg" style={{ color: '#3E2723' }}>{t('loading')}</p>
+        </div>
       </div>
     );
   }
@@ -140,6 +194,34 @@ const AuthPage: React.FC = () => {
           <p className="text-sm" style={{ color: '#5C3D2E' }}>
             {isLogin ? t("auth.signInMessage") : t("auth.registerMessage")}
           </p>
+          
+          {/* Error Display */}
+          {(authError || error) && !successMessage && (
+            <div className="mt-4 bg-red-50 border border-red-200 rounded-lg p-3">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center">
+                  <AlertCircle className="h-4 w-4 text-red-400 mr-2" />
+                  <p className="text-red-800 text-sm">{authError || error}</p>
+                </div>
+                <button
+                  onClick={handleRetry}
+                  className="text-red-600 hover:text-red-800 transition-colors"
+                >
+                  <RefreshCw className="h-4 w-4" />
+                </button>
+              </div>
+            </div>
+          )}
+          
+          {/* Success Message */}
+          {successMessage && !(authError || error) && (
+            <div className="mt-4 bg-green-50 border border-green-200 rounded-lg p-3">
+              <div className="flex items-center">
+                <CheckCircle className="h-4 w-4 text-green-400 mr-2" />
+                <p className="text-green-800 text-sm">{successMessage}</p>
+              </div>
+            </div>
+          )}
         </div>
 
         <div className="relative w-full h-[350px] perspective">
@@ -168,15 +250,30 @@ const AuthPage: React.FC = () => {
                       placeholder={t("auth.enterPassword")}
                       className="w-full pl-3 pr-10 py-2 border rounded-lg"
                     />
-                    <button type="button" className="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer" onClick={() => setShowPassword(!showPassword)}>
-                      {showPassword ? "🙈" : "👁️"}
+                    <button 
+                      type="button" 
+                      className="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer hover:bg-gray-100 rounded-r-lg transition-colors" 
+                      onClick={() => setShowPassword(!showPassword)}
+                    >
+                      {showPassword ? <EyeOff className="h-4 w-4 text-gray-500" /> : <Eye className="h-4 w-4 text-gray-500" />}
                     </button>
                   </div>
                 </div>
-                <button type="submit" disabled={loading} className="w-full text-white py-2 px-4 mt-4 rounded-lg font-medium transition-colors hover:shadow-lg flex items-center justify-center" style={{ background: 'linear-gradient(to right, #A97155, #D9A441)' }}>
-                  {loading ? t("auth.loading") : t("auth.signIn")}
+                <button 
+                  type="submit" 
+                  disabled={loading || !loginEmail || !loginPassword} 
+                  className="w-full text-white py-2 px-4 mt-4 rounded-lg font-medium transition-colors hover:shadow-lg flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed" 
+                  style={{ background: 'linear-gradient(to right, #A97155, #D9A441)' }}
+                >
+                  {loading ? (
+                    <>
+                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                      {t("loading")}
+                    </>
+                  ) : (
+                    t("auth.signIn")
+                  )}
                 </button>
-                {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
               </form>
             </div>
 
@@ -205,18 +302,38 @@ const AuthPage: React.FC = () => {
                 </div>
                 <div>
                   <label className="block text-sm font-medium mb-1">{t("auth.password")}</label>
-                  <input
-                    type={showPassword ? "text" : "password"}
-                    value={signupPassword}
-                    onChange={(e) => setSignupPassword(e.target.value)}
-                    placeholder={t("auth.createPassword")}
-                    className="w-full pl-3 pr-4 py-2 border rounded-lg"
-                  />
+                  <div className="relative">
+                    <input
+                      type={showPassword ? "text" : "password"}
+                      value={signupPassword}
+                      onChange={(e) => setSignupPassword(e.target.value)}
+                      placeholder={t("auth.createPassword")}
+                      className="w-full pl-3 pr-10 py-2 border rounded-lg"
+                    />
+                    <button 
+                      type="button" 
+                      className="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer hover:bg-gray-100 rounded-r-lg transition-colors" 
+                      onClick={() => setShowPassword(!showPassword)}
+                    >
+                      {showPassword ? <EyeOff className="h-4 w-4 text-gray-500" /> : <Eye className="h-4 w-4 text-gray-500" />}
+                    </button>
+                  </div>
                 </div>
-                <button type="submit" disabled={loading} className="w-full text-white py-2 px-4 mt-4 rounded-lg font-medium transition-colors hover:shadow-lg flex items-center justify-center" style={{ background: 'linear-gradient(to right, #A97155, #D9A441)' }}>
-                  {loading ? t("auth.loading") : t("auth.createAccount")}
+                <button 
+                  type="submit" 
+                  disabled={loading || !signupName || !signupEmail || !signupPassword} 
+                  className="w-full text-white py-2 px-4 mt-4 rounded-lg font-medium transition-colors hover:shadow-lg flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed" 
+                  style={{ background: 'linear-gradient(to right, #A97155, #D9A441)' }}
+                >
+                  {loading ? (
+                    <>
+                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                      {t("loading")}
+                    </>
+                  ) : (
+                    t("auth.createAccount")
+                  )}
                 </button>
-                {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
               </form>
             </div>
 

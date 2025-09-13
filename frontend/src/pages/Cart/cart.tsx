@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Minus, Plus, Trash2, ShoppingBag, ArrowLeft, AlertCircle } from "lucide-react";
+import { Minus, Plus, Trash2, ShoppingBag, ArrowLeft } from "lucide-react";
 import { useCartStore } from "../../store/cartStore";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
@@ -10,7 +10,7 @@ interface CartProps {
 }
 
 const Cart: React.FC<CartProps> = ({ onCheckout }) => {
-  const { cart, updateCartItemQuantity, removeItemFromCart, loading, error, fetchCart } = useCartStore();
+  const { cart, updateCartItemQuantity, removeItemFromCart, loading, fetchCart } = useCartStore();
   const items = cart?.items || [];
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -18,7 +18,7 @@ const Cart: React.FC<CartProps> = ({ onCheckout }) => {
 
   // Calculate totals - use backend total if available, otherwise calculate frontend
   const subtotal = cart?.total || items.reduce((total, item) => {
-    const price = Number(item.unit_price ?? item.product.price);
+    const price = Number(item.unit_price || item.product?.price || 0);
     return total + (price * item.quantity);
   }, 0);
   
@@ -112,7 +112,7 @@ const Cart: React.FC<CartProps> = ({ onCheckout }) => {
               <div className="px-4 py-5 sm:p-6">
                 <ul className="-my-6 divide-y divide-gray-200">
                   {items.map(item => {
-                   const itemPrice = Number(item.unit_price ?? item.product.price);
+                   const itemPrice = Number(item.unit_price || item.product?.price || 0);
                    const itemTotal = itemPrice * item.quantity;
                     const isAtStockLimit = item.product.stock !== undefined && item.quantity >= item.product.stock;
                     const hasExceededStock = item.product.stock !== undefined && item.product.stock < item.quantity;

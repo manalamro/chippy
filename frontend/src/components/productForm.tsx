@@ -36,6 +36,9 @@ const ProductForm: React.FC<ProductFormProps> = ({ onClose, onSuccess, product, 
   );
 
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
+  const [formError, setFormError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+
   const { createProduct, updateProduct } = useProductStore();
   const { t } = useTranslation();
 
@@ -47,14 +50,14 @@ const ProductForm: React.FC<ProductFormProps> = ({ onClose, onSuccess, product, 
     if (price < 0) newErrors.price = t("PRODUCTS.MANAGEMENT.ERROR.PRICE_NEGATIVE");
     if (stock < 0) newErrors.stock = t("PRODUCTS.MANAGEMENT.ERROR.STOCK_NEGATIVE");
     if (categoryId === "") newErrors.categoryId = t("PRODUCTS.MANAGEMENT.ERROR.CATEGORY_REQUIRED");
-    
+
     // Validate images
     images.forEach((image, index) => {
       if (image.url && !isValidUrl(image.url)) {
         newErrors[`image_${index}`] = t("PRODUCTS.MANAGEMENT.ERROR.INVALID_URL");
       }
     });
-    
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -70,30 +73,36 @@ const ProductForm: React.FC<ProductFormProps> = ({ onClose, onSuccess, product, 
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setFormError(null);
+
     if (!validate()) return;
 
     try {
-      const payload = { 
-        title, 
-        slug, 
-        description, 
-        price, 
-        stock, 
+      setLoading(true);
+
+      const payload = {
+        title,
+        slug,
+        description,
+        price,
+        stock,
         category_id: categoryId,
         images: images.filter(img => img.url.trim() !== "")
       };
-      
+
       if (product) {
         await updateProduct(product.id, payload);
       } else {
         await createProduct(payload);
       }
-      
+
       onSuccess();
       onClose();
     } catch (err: any) {
       console.error(err);
-      alert(err.message || t("error.generic"));
+      setFormError(err.message || t("error.generic"));
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -129,6 +138,9 @@ const ProductForm: React.FC<ProductFormProps> = ({ onClose, onSuccess, product, 
         <h2 className="text-2xl font-bold text-[#3E2723] mb-4">
           {product ? t("PRODUCTS.MANAGEMENT.EDIT_PRODUCT") : t("PRODUCTS.MANAGEMENT.ADD_PRODUCT")}
         </h2>
+
+        {/* Global Error */}
+        {formError && <p className="text-red-600 text-sm mb-4">{formError}</p>}
 
         {/* Title */}
         <label className="block mb-1 font-semibold text-[#3E2723]">{t("PRODUCTS.MANAGEMENT.TITLE")}</label>
@@ -262,15 +274,21 @@ const ProductForm: React.FC<ProductFormProps> = ({ onClose, onSuccess, product, 
           <button
             type="button"
             onClick={onClose}
+            disabled={loading}
             className="px-4 py-2 rounded bg-gray-300 hover:bg-gray-400"
           >
             {t("cancel")}
           </button>
           <button
             type="submit"
-            className="px-4 py-2 rounded bg-gradient-to-r from-[#A97155] to-[#D9A441] text-white"
+            disabled={loading}
+            className={`px-4 py-2 rounded text-white ${
+              loading
+                ? "bg-gray-400 cursor-not-allowed"
+                : "bg-gradient-to-r from-[#A97155] to-[#D9A441]"
+            }`}
           >
-            {product ? t("update") : t("add")}
+            {loading ? t("loading") : product ? t("update") : t("add")}
           </button>
         </div>
       </motion.form>
