@@ -1,8 +1,9 @@
 import axios from "axios";
 import { useUserStore } from "../store/userStore";
 
+// استخدم متغير البيئة لتحديد baseURL
 const apiClient = axios.create({
-  baseURL: "http://localhost:5000", // adjust if backend is deployed elsewhere
+  baseURL: process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000", // fallback للتطوير المحلي
   headers: { "Content-Type": "application/json" },
 });
 
@@ -15,13 +16,13 @@ apiClient.interceptors.request.use((config) => {
   return config;
 });
 
-// Add this to your existing apiClient.ts
+// validate token
 export const validateToken = async () => {
   const res = await apiClient.get("/auth/validate");
   return res.data;
 };
 
-// handle 401 globally (logout user if token is invalid/expired)
+// handle 401 globally
 apiClient.interceptors.response.use(
   (response) => response,
   (error) => {
@@ -38,7 +39,6 @@ export const createAddress = async (data: any) => {
   const res = await apiClient.post("/addresses", data);
   return res.data.address;
 };
-
 
 // ---------------------- AUTH ----------------------
 export const signup = async (name: string, email: string, password: string) => {
@@ -112,13 +112,14 @@ export const adminGetCategories = async () => {
 
 export const adminFetchOrders = async (params?: { page?: number; limit?: number; status?: string }) => {
   const res = await apiClient.get("/admin/orders", { params });
-  return res.data.orders; // match response structure from backend
+  return res.data.orders;
 };
 
 export const adminUpdateOrderStatus = async (orderId: number, status: string) => {
   const res = await apiClient.patch(`/admin/orders/${orderId}/status`, { status });
   return res.data;
 };
+
 export const adminCreateProduct = async (data: any) => {
   const res = await apiClient.post("/admin/products", data);
   return res.data;
@@ -150,7 +151,4 @@ export const adminDeleteCategory = async (id: number) => {
   return res.data;
 };
 
-
 export default apiClient;
-
-
