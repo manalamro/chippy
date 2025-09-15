@@ -1,10 +1,12 @@
 import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useOrdersStore } from "../../store/ordersStore";
-import { Package, Calendar, MapPin, Loader2, CreditCard, CheckCircle, Clock, Truck } from "lucide-react";
+import { Package, Calendar, MapPin, Loader2, CheckCircle, Clock, Truck } from "lucide-react";
+
+// Remove unused CreditCard import
 
 const MyOrders: React.FC = () => {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation(); // Remove unused i18n
   const { orders, fetchOrders, loading } = useOrdersStore();
 
   useEffect(() => {
@@ -49,12 +51,12 @@ const MyOrders: React.FC = () => {
   }
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-8" dir={i18n.language === "ar" ? "rtl" : "ltr"}>
+    <div className="max-w-4xl mx-auto px-4 py-8" dir={document.documentElement.dir}>
       <div className="mb-8 text-center">
         <h1 className="text-3xl font-bold bg-gradient-to-r from-[#7B4B27] to-[#A97155] bg-clip-text text-transparent">
           {t("myOrders", "طلباتي")}
         </h1>
-        <div className={`flex items-center justify-center pt-4 opacity-60 ${i18n.language === "ar" ? "space-x-reverse" : ""} space-x-2`}>
+        <div className={`flex items-center justify-center pt-4 opacity-60 ${document.documentElement.dir === "rtl" ? "space-x-reverse" : ""} space-x-2`}>
           <Package className="text-[#7B4B27]" size={16} />
           <div className="w-8 h-0.5 bg-gradient-to-r from-[#7B4B27]/50 to-[#A97155]/50" />
           <Calendar className="text-[#A97155]" size={16} />
@@ -88,7 +90,7 @@ const MyOrders: React.FC = () => {
                 className="bg-white/70 backdrop-blur-md rounded-xl border border-[#D9A441]/30 shadow-lg overflow-hidden transition-all duration-300 hover:shadow-xl hover:border-[#A97155]/50"
               >
                 <div className="p-6">
-                  <div className={`flex flex-col md:flex-row ${i18n.language === "ar" ? "md:justify-between" : "md:justify-between"} md:items-start gap-4 mb-4`}>
+                  <div className={`flex flex-col md:flex-row ${document.documentElement.dir === "rtl" ? "md:justify-between" : "md:justify-between"} md:items-start gap-4 mb-4`}>
                     <div className="flex items-center gap-3">
                       <div className="bg-[#F6C1B1]/20 p-2 rounded-full">
                         <Package className="h-5 w-5 text-[#7B4B27]" />
@@ -98,7 +100,7 @@ const MyOrders: React.FC = () => {
                       </h3>
                     </div>
                     
-                    <div className={`flex flex-col ${i18n.language === "ar" ? "items-end" : "items-start"} gap-2`}>
+                    <div className={`flex flex-col ${document.documentElement.dir === "rtl" ? "items-end" : "items-start"} gap-2`}>
                       {formattedDate && (
                         <div className="flex items-center gap-2 text-sm text-[#7B4B27]">
                           <Calendar className="h-4 w-4" />
@@ -115,7 +117,7 @@ const MyOrders: React.FC = () => {
                               order.address.city,
                               order.address.postal_code,
                               order.address.country
-                            ].filter(Boolean).join(i18n.language === "ar" ? "، " : ", ")}
+                            ].filter(Boolean).join(document.documentElement.dir === "rtl" ? "، " : ", ")}
                           </span>
                         </div>
                       )}
@@ -150,11 +152,11 @@ const MyOrders: React.FC = () => {
                           <li key={idx} className="flex justify-between items-center py-2 px-3 bg-[#F6C1B1]/10 rounded-lg">
                             <div>
                               <p className="font-medium text-[#3E2723]">{item.title || t("product", "منتج")}</p>
-                              <p className="text-sm text-[#7B4B27]">
+                              <p className="text-sm text-[#7B3D2E]">
                                 {quantity} × ${price.toFixed(2)}
                               </p>
                             </div>
-                            <span className="font-semibold text-[#7B4B27]">
+                            <span className="font-semibold text-[#7B3D2E]">
                               ${itemTotal.toFixed(2)}
                             </span>
                           </li>
