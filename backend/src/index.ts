@@ -78,7 +78,7 @@ app.use('*', (req, res) => {
 });
 
 // Test database connection and start server
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 5432;
 
 pool.connect((err, client, release) => {
   if (err) {
