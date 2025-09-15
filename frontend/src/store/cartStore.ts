@@ -5,7 +5,7 @@ import * as api from '../lib/apiClient';
 export interface Product {
   id: number;
   title: string;
-  price: number | string;
+  price: number ;
   images?: Array<{ url: string; alt: string; id?: number }>;
   category?: { name: string };
   slug?: string;
