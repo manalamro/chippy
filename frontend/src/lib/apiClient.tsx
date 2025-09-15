@@ -2,7 +2,7 @@ import axios from "axios";
 import { useUserStore } from "../store/userStore";
 
 const apiClient = axios.create({
-  baseURL: "http://localhost:5000", // adjust if backend is deployed elsewhere
+  baseURL: "http://localhost:5432", // adjust if backend is deployed elsewhere
   headers: { "Content-Type": "application/json" },
 });
 
