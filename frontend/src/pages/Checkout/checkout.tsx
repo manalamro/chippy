@@ -1,9 +1,11 @@
 import React, { useState } from "react";
-import { CreditCard, Lock, ArrowLeft, CheckCircle, AlertCircle } from "lucide-react";
+import { Lock, ArrowLeft, CheckCircle, AlertCircle } from "lucide-react";
 import { useCartStore } from "../../store/cartStore";
 import { useOrdersStore } from "../../store/ordersStore";
 import { createAddress } from "../../lib/apiClient";
 import { useTranslation } from "react-i18next";
+
+// Remove unused CreditCard import
 
 interface ValidationErrors {
   customer?: {
@@ -40,7 +42,7 @@ const Checkout: React.FC = () => {
     payment: { cardNumber: "", cardName: "", expDate: "", cvv: "" },
   });
 
-  const total = items.reduce((total, item) => total + item.product.price * item.quantity, 0);
+  const total = items.reduce((total, item) => total + (item.product.price * item.quantity), 0);
 
   // Validation functions
   const validateCustomer = () => {

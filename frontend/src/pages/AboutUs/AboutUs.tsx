@@ -1,4 +1,4 @@
-import React from 'react';
+// Remove unused React import
 import { Phone, Mail, MapPin, Clock } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 

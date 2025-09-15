@@ -37,12 +37,13 @@ function App() {
 
   return (
     <Router>
+      
       <Routes>
         <Route element={<MainLayout />}>
           <Route path="/" element={<Home />} />
           <Route path="/products" element={<ProductsList />} />
           <Route path="/products/:slug" element={<ProductDetails />} />
-          <Route path="/cart" element={<Cart onCheckout={() => setShowAuthModal(true)} />} />
+          <Route path="/cart" element={<Cart onCheckout={() => setShowAuthModal(true)}  />} />
           <Route path="/aboutUs" element={<AboutUs />} />
           <Route path="/checkout" element={<Checkout />} />
           <Route path="/orders" element={<MyOrders />} />

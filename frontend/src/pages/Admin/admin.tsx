@@ -50,7 +50,7 @@ interface StatusModalProps {
 }
 const StatusModal: React.FC<StatusModalProps> = ({ orderId, currentStatus, onUpdate, onClose }) => {
   const [status, setStatus] = useState(currentStatus);
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   
   const statusOptions = ["pending", "processing", "shipped", "delivered", "cancelled"];
   
