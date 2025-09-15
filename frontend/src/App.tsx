@@ -34,7 +34,9 @@ function App() {
       // Token exists but user state not set - this will be handled by persisted store
     }
   }, []);
-
+          
+  console.log(showAuthModal);
+  
   return (
     <Router>
       
