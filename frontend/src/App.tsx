@@ -12,6 +12,7 @@ import Checkout from './pages/Checkout/checkout';
 import MyOrders from './pages/Checkout/myOrder';
 import AdminPage from './pages/Admin/admin';
 import ProtectedAdminRoute from './components/ProtectedAdminRoute';
+import { Toaster } from 'react-hot-toast';
 
 import './lib/i18n/i18n';
 
@@ -19,6 +20,7 @@ function MainLayout() {
   return (
     <>
       <Header />
+      <Toaster position="top-center" />
       <Outlet />
     </>
   );

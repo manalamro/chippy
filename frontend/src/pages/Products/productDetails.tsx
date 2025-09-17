@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import toast from 'react-hot-toast';
 import { useParams } from 'react-router-dom';
 import { useProductStore } from '../../store/productStore';
 import { useCartStore } from '../../store/cartStore';
@@ -49,11 +50,11 @@ const ProductDetail: React.FC = () => {
       const existingItem = cart?.items.find((item) => item.product.id === selectedProduct.id);
       const currentQty = existingItem ? existingItem.quantity : 0;
 
-      // منع تجاوز المخزون
-      if (selectedProduct.stock !== undefined && currentQty >= selectedProduct.stock) {
-        alert(t('PRODUCTS.UI.STOCK_LIMIT_REACHED', 'لقد وصلت للحد الأقصى من هذا المنتج في السلة'));
-        return;
-      }
+    // منع تجاوز المخزون
+    if (selectedProduct.stock !== undefined && currentQty >= selectedProduct.stock) {
+      toast.error(t('PRODUCTS.UI.STOCK_LIMIT_REACHED', 'لقد وصلت للحد الأقصى من هذا المنتج في السلة'));
+      return;
+    }
 
       const guestCartId = localStorage.getItem('guest_cart_id');
       const cartId = user?.id ? String(user.id) : guestCartId || undefined;

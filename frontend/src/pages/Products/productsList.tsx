@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import toast from 'react-hot-toast';
 import { CheckCircle, Search, X, AlertCircle, RefreshCw } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useProductStore } from '../../store/productStore';
@@ -86,7 +87,7 @@ const ProductsList: React.FC = () => {
 
       // منع تجاوز المخزون
       if (product.stock !== undefined && currentQty >= product.stock) {
-        alert(t('PRODUCTS.UI.STOCK_LIMIT_REACHED', 'لقد وصلت للحد الأقصى من هذا المنتج في السلة'));
+        toast.error(t('PRODUCTS.UI.STOCK_LIMIT_REACHED', 'لقد وصلت للحد الأقصى من هذا المنتج في السلة'));
         return;
       }
 
@@ -108,7 +109,7 @@ const ProductsList: React.FC = () => {
       setTimeout(() => setAddedToCart(null), 2000);
     } catch (err: any) {
       console.error('Failed to add item to cart:', err);
-      alert(t('error.generic') || 'حدث خطأ أثناء إضافة المنتج للسلة');
+      toast.error(t('error.generic') || 'حدث خطأ أثناء إضافة المنتج للسلة');
     }
   };
 
@@ -150,7 +151,7 @@ const ProductsList: React.FC = () => {
         )}
 
         {/* Search & Filter */}
-        <div className="mb-12 p-6 bg-white rounded-2xl shadow-lg">
+        <div className="mb-12 p-6 bg-white rounded-2xl">
           <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
             <div className="relative w-full md:w-1/2">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
@@ -161,14 +162,7 @@ const ProductsList: React.FC = () => {
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#A97155] focus:border-transparent"
               />
-              {searchQuery && (
-                <button
-                  onClick={() => setSearchQuery('')}
-                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
-                >
-                  <X className="w-5 h-5" />
-                </button>
-              )}
+              {/* Removed the clear (X) button as requested */}
             </div>
 
             <div className="w-full md:w-1/3">

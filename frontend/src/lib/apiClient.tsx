@@ -40,6 +40,12 @@ export const createAddress = async (data: any) => {
   return res.data.address;
 };
 
+export const getUserAddresses = async () => {
+  const res = await apiClient.get("/addresses");
+  return res.data;
+};
+
+
 // ---------------------- AUTH ----------------------
 export const signup = async (name: string, email: string, password: string) => {
   const res = await apiClient.post("/auth/signup", { name, email, password });

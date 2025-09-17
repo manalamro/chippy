@@ -22,17 +22,19 @@ const AuthPage: React.FC = () => {
   const [signupName, setSignupName] = useState("");
   const [signupEmail, setSignupEmail] = useState("");
   const [signupPassword, setSignupPassword] = useState("");
+  const [signupErrors, setSignupErrors] = useState<{ name?: string; email?: string; password?: string }>({});
 
   const { loginUser, signupUser, loading, error, user } = useUserStore();
   const cartStore = useCartStore();
 
-  // Set document direction based on selected language
+  // Set document direction and language based on saved preference
   useEffect(() => {
-    const savedLang = localStorage.getItem("language");
-    if (savedLang && savedLang !== i18n.language) {
+    const savedLang = localStorage.getItem("language") || "en";
+    if (savedLang !== i18n.language) {
       i18n.changeLanguage(savedLang);
     }
-    document.documentElement.dir = i18n.language === "ar" ? "rtl" : "ltr";
+    document.documentElement.dir = savedLang === "ar" ? "rtl" : "ltr";
+    document.documentElement.lang = savedLang;
   }, [i18n]);
 
   useEffect(() => {
@@ -55,15 +57,9 @@ const AuthPage: React.FC = () => {
       setIsCheckingAuth(false);
     };
     checkAuth();
-  }, [t]);
+  }, [t, user]);
 
-  useEffect(() => {
-    if (user) {
-      redirectUser(user);
-    }
-  }, [user]);
-
-  // مسح رسالة النجاح عند وجود خطأ
+  // Clear success message when there's an error
   useEffect(() => {
     if (error) {
       setSuccessMessage(null);
@@ -71,7 +67,7 @@ const AuthPage: React.FC = () => {
     }
   }, [error, t]);
 
-  // مسح الرسائل عند تغيير التبويب
+  // Clear messages when switching tabs
   useEffect(() => {
     setAuthError(null);
     setSuccessMessage(null);
@@ -97,13 +93,13 @@ const AuthPage: React.FC = () => {
     setSuccessMessage(null);
   };
 
-
   // Updated toggleLanguage to save in localStorage
   const toggleLanguage = () => {
     const newLang = i18n.language === "en" ? "ar" : "en";
     i18n.changeLanguage(newLang);
-    localStorage.setItem("language", newLang); // save selection
+    localStorage.setItem("language", newLang);
     document.documentElement.dir = newLang === "ar" ? "rtl" : "ltr";
+    document.documentElement.lang = newLang;
   };
 
   const handleLogin = async (e: React.FormEvent) => {
@@ -113,9 +109,9 @@ const AuthPage: React.FC = () => {
     
     try {
       await loginUser(loginEmail, loginPassword);
-      // التحقق من عدم وجود خطأ قبل عرض رسالة النجاح
+      // Check if there's no error before showing success message
       if (!error && !authError) {
-        setSuccessMessage(t('auth.loginSuccess') || 'تم تسجيل الدخول بنجاح!');
+        setSuccessMessage(t('auth.loginSuccess'));
       }
     } catch (err: any) {
       console.error('Login failed:', err);
@@ -128,16 +124,78 @@ const AuthPage: React.FC = () => {
     setAuthError(null);
     setSuccessMessage(null);
     
+    // Validate all fields before submit
+    const nextErrors: { name?: string; email?: string; password?: string } = {};
+    if (!signupName.trim()) {
+      nextErrors.name = t('validation.fullNameRequired');
+    } else if (signupName.trim().length < 2) {
+      nextErrors.name = t('validation.fullNameTooShort');
+    }
+    
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!signupEmail.trim()) {
+      nextErrors.email = t('validation.email');
+    } else if (!emailRegex.test(signupEmail.trim())) {
+      nextErrors.email = t('validation.invalidEmail');
+    }
+    
+    if (!signupPassword) {
+      nextErrors.password = t('validation.password');
+    } else if (signupPassword.length < 8) {
+      nextErrors.password = t('validation.passwordTooShort');
+    }
+    
+    setSignupErrors(nextErrors);
+    if (Object.keys(nextErrors).length > 0) {
+      return;
+    }
+    
     try {
       await signupUser(signupName, signupEmail, signupPassword);
-      // التحقق من عدم وجود خطأ قبل عرض رسالة النجاح
+      // Check if there's no error before showing success message
       if (!error && !authError) {
-        setSuccessMessage(t('auth.signupSuccess') || 'تم إنشاء الحساب بنجاح!');
+        setSuccessMessage(t('auth.signupSuccess'));
       }
     } catch (err: any) {
       console.error('Signup failed:', err);
       setAuthError(getUserFriendlyError(err, t));
     }
+  };
+
+  const validateSignupNameOnBlur = () => {
+    const value = signupName.trim();
+    setSignupErrors((prev) => ({
+      ...prev,
+      name: !value
+        ? t('validation.fullNameRequired')
+        : value.length < 2
+          ? t('validation.fullNameTooShort')
+          : undefined,
+    }));
+  };
+
+  const validateSignupEmailOnBlur = () => {
+    const value = signupEmail.trim();
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    setSignupErrors((prev) => ({
+      ...prev,
+      email: !value
+        ? t('validation.email')
+        : !emailRegex.test(value)
+          ? t('validation.invalidEmail')
+          : undefined,
+    }));
+  };
+
+  const validateSignupPasswordOnBlur = () => {
+    setSignupErrors((prev) => ({
+      ...prev,
+      password: !signupPassword 
+        ? t('validation.password') 
+        : signupPassword.length < 8 
+          ? t('validation.passwordTooShort')
+          : undefined,
+    }));
   };
 
   if (isCheckingAuth) {
@@ -159,7 +217,7 @@ const AuthPage: React.FC = () => {
       style={{ background: 'linear-gradient(to bottom right, #FAF3E0, #FDFBF7)' }}>
       
       {/* Language Toggle */}
-      <div className="absolute top-4 right-6">
+      <div className={`absolute top-4 ${i18n.language === 'ar' ? 'left-6' : 'right-6'}`}>
         <button
           onClick={toggleLanguage}
           className="flex items-center gap-1 px-3 py-1 text-sm rounded-lg bg-white/80 border border-gray-200 shadow hover:bg-gray-100 transition cursor-pointer"
@@ -176,10 +234,16 @@ const AuthPage: React.FC = () => {
         {/* Login/Register Tabs */}
         <div className="relative flex flex-col" style={{ background: 'linear-gradient(to right, #7B4B27, #A97155, #D9A441)' }}>
           <div className="flex">
-            <button className={`flex-1 flex items-center justify-center font-medium transition-all duration-300 py-4 ${isLogin ? 'text-white bg-amber-900 bg-opacity-30' : 'text-amber-900 bg-white'}`} onClick={() => setIsLogin(true)}>
+            <button 
+              className={`flex-1 flex items-center justify-center font-medium transition-all duration-300 py-4 ${isLogin ? 'text-white bg-amber-900 bg-opacity-30' : 'text-amber-900 bg-white'}`} 
+              onClick={() => setIsLogin(true)}
+            >
               {t("auth.login")}
             </button>
-            <button className={`flex-1 flex items-center justify-center font-medium transition-all duration-300 py-4 ${!isLogin ? 'text-white bg-amber-900 bg-opacity-30' : 'text-amber-900 bg-white'}`} onClick={() => setIsLogin(false)}>
+            <button 
+              className={`flex-1 flex items-center justify-center font-medium transition-all duration-300 py-4 ${!isLogin ? 'text-white bg-amber-900 bg-opacity-30' : 'text-amber-900 bg-white'}`} 
+              onClick={() => setIsLogin(false)}
+            >
               {t("auth.register")}
             </button>
           </div>
@@ -238,6 +302,7 @@ const AuthPage: React.FC = () => {
                     onChange={(e) => setLoginEmail(e.target.value)}
                     placeholder={t("auth.enterEmail")}
                     className="w-full pl-3 pr-4 py-2 border rounded-lg"
+                    dir={i18n.language === 'ar' ? 'rtl' : 'ltr'}
                   />
                 </div>
                 <div>
@@ -249,10 +314,11 @@ const AuthPage: React.FC = () => {
                       onChange={(e) => setLoginPassword(e.target.value)}
                       placeholder={t("auth.enterPassword")}
                       className="w-full pl-3 pr-10 py-2 border rounded-lg"
+                      dir={i18n.language === 'ar' ? 'rtl' : 'ltr'}
                     />
                     <button 
                       type="button" 
-                      className="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer hover:bg-gray-100 rounded-r-lg transition-colors" 
+                      className={`absolute inset-y-0 ${i18n.language === 'ar' ? 'left-0 pl-3' : 'right-0 pr-3'} flex items-center cursor-pointer hover:bg-gray-100 rounded-lg transition-colors`} 
                       onClick={() => setShowPassword(!showPassword)}
                     >
                       {showPassword ? <EyeOff className="h-4 w-4 text-gray-500" /> : <Eye className="h-4 w-4 text-gray-500" />}
@@ -286,9 +352,15 @@ const AuthPage: React.FC = () => {
                     type="text"
                     value={signupName}
                     onChange={(e) => setSignupName(e.target.value)}
+                    onBlur={validateSignupNameOnBlur}
                     placeholder={t("auth.enterName")}
-                    className="w-full pl-3 pr-4 py-2 border rounded-lg"
+                    className={`w-full pl-3 pr-4 py-2 border rounded-lg ${signupErrors.name ? 'border-red-400' : ''}`}
+                    aria-invalid={!!signupErrors.name}
+                    dir={i18n.language === 'ar' ? 'rtl' : 'ltr'}
                   />
+                  {signupErrors.name && (
+                    <p className="mt-1 text-xs text-red-600">{signupErrors.name}</p>
+                  )}
                 </div>
                 <div>
                   <label className="block text-sm font-medium mb-1">{t("auth.email")}</label>
@@ -296,9 +368,15 @@ const AuthPage: React.FC = () => {
                     type="email"
                     value={signupEmail}
                     onChange={(e) => setSignupEmail(e.target.value)}
+                    onBlur={validateSignupEmailOnBlur}
                     placeholder={t("auth.enterEmail")}
-                    className="w-full pl-3 pr-4 py-2 border rounded-lg"
+                    className={`w-full pl-3 pr-4 py-2 border rounded-lg ${signupErrors.email ? 'border-red-400' : ''}`}
+                    aria-invalid={!!signupErrors.email}
+                    dir={i18n.language === 'ar' ? 'rtl' : 'ltr'}
                   />
+                  {signupErrors.email && (
+                    <p className="mt-1 text-xs text-red-600">{signupErrors.email}</p>
+                  )}
                 </div>
                 <div>
                   <label className="block text-sm font-medium mb-1">{t("auth.password")}</label>
@@ -307,21 +385,27 @@ const AuthPage: React.FC = () => {
                       type={showPassword ? "text" : "password"}
                       value={signupPassword}
                       onChange={(e) => setSignupPassword(e.target.value)}
+                      onBlur={validateSignupPasswordOnBlur}
                       placeholder={t("auth.createPassword")}
-                      className="w-full pl-3 pr-10 py-2 border rounded-lg"
+                      className={`w-full pl-3 pr-10 py-2 border rounded-lg ${signupErrors.password ? 'border-red-400' : ''}`}
+                      aria-invalid={!!signupErrors.password}
+                      dir={i18n.language === 'ar' ? 'rtl' : 'ltr'}
                     />
                     <button 
                       type="button" 
-                      className="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer hover:bg-gray-100 rounded-r-lg transition-colors" 
+                      className={`absolute inset-y-0 ${i18n.language === 'ar' ? 'left-0 pl-3' : 'right-0 pr-3'} flex items-center cursor-pointer hover:bg-gray-100 rounded-lg transition-colors`} 
                       onClick={() => setShowPassword(!showPassword)}
                     >
                       {showPassword ? <EyeOff className="h-4 w-4 text-gray-500" /> : <Eye className="h-4 w-4 text-gray-500" />}
                     </button>
                   </div>
+                  {signupErrors.password && (
+                    <p className="mt-1 text-xs text-red-600">{signupErrors.password}</p>
+                  )}
                 </div>
                 <button 
                   type="submit" 
-                  disabled={loading || !signupName || !signupEmail || !signupPassword} 
+                  disabled={loading || !signupName || !signupEmail || !signupPassword || !!signupErrors.name || !!signupErrors.email || !!signupErrors.password} 
                   className="w-full text-white py-2 px-4 mt-4 rounded-lg font-medium transition-colors hover:shadow-lg flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed" 
                   style={{ background: 'linear-gradient(to right, #A97155, #D9A441)' }}
                 >
@@ -358,7 +442,7 @@ const AuthPage: React.FC = () => {
       {showGuestModal && (
         <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
           <div className="bg-white rounded-xl p-6 max-w-sm text-center">
-            <h3 className="text-lg font-semibold mb-4">Notice</h3>
+            <h3 className="text-lg font-semibold mb-4">{t("auth.notice")}</h3>
             <p className="mb-6">{t("auth.guestNotice")}</p>
             <div className="flex justify-center gap-4">
               <button onClick={handleGuestConfirm} className="px-4 py-2 bg-amber-900 text-white rounded-lg hover:bg-amber-800 transition cursor-pointer">

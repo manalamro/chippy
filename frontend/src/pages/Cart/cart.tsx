@@ -1,4 +1,5 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
+import toast from 'react-hot-toast';
 import { Minus, Plus, Trash2, ShoppingBag, ArrowLeft } from "lucide-react";
 import { useCartStore } from "../../store/cartStore";
 import { useTranslation } from "react-i18next";
@@ -12,9 +13,12 @@ interface CartProps {
 const Cart: React.FC<CartProps> = ({ onCheckout }) => {
   const { cart, updateCartItemQuantity, removeItemFromCart, loading, fetchCart } = useCartStore();
   const items = cart?.items || [];
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const { user, token } = useUserStore();
+
+  const [quantityInputs, setQuantityInputs] = useState<Record<string, string>>({});
+  const isRTL = i18n.dir() === 'rtl';
 
   // Calculate totals - use backend total if available, otherwise calculate frontend
   const subtotal = cart?.total || items.reduce((total, item) => {
@@ -34,6 +38,21 @@ const Cart: React.FC<CartProps> = ({ onCheckout }) => {
     }
   }, [user, fetchCart]);
 
+  // Sync input values with store quantities when items change
+  useEffect(() => {
+    setQuantityInputs((prev) => {
+      const next: Record<string, string> = { ...prev };
+      items.forEach((it) => {
+        const current = prev[it.id];
+        const desired = String(it.quantity);
+        if (current === undefined || current === "" || Number(current) === it.quantity) {
+          next[it.id] = desired;
+        }
+      });
+      return next;
+    });
+  }, [items]);
+
   // Update quantity with stock check
   const handleUpdateQuantity = async (itemId: string, newQuantity: number) => {
     const item = items.find(i => i.id === itemId);
@@ -41,13 +60,13 @@ const Cart: React.FC<CartProps> = ({ onCheckout }) => {
 
     // Prevent exceeding stock
     if (item.product.stock !== undefined && newQuantity > item.product.stock) {
-      alert(`⚠️ Cannot add more than ${item.product.stock} items for "${item.product.title}"`);
+      toast.error(`⚠️ Cannot add more than ${item.product.stock} items for "${item.product.title}"`);
       return;
     }
 
     // Prevent reducing below 1
     if (newQuantity < 1) {
-      alert(`⚠️ Quantity cannot be less than 1`);
+      toast.error(`⚠️ Quantity cannot be less than 1`);
       return;
     }
 
@@ -66,13 +85,53 @@ const Cart: React.FC<CartProps> = ({ onCheckout }) => {
     }
   };
 
+  const handleInputChange = (itemId: string, value: string) => {
+    // allow only digits
+    if (/^\d*$/.test(value)) {
+      setQuantityInputs((prev) => ({ ...prev, [itemId]: value }));
+    }
+  };
+
+  const commitQuantityInput = (itemId: string) => {
+    const raw = quantityInputs[itemId];
+    const item = items.find(i => i.id === itemId);
+    if (!item) return;
+
+    const parsed = Number(raw);
+    if (!raw || isNaN(parsed)) {
+      setQuantityInputs((prev) => ({ ...prev, [itemId]: String(item.quantity) }));
+      return;
+    }
+
+    let nextQty = parsed;
+    if (nextQty < 1) {
+      toast.error(`⚠️ Quantity cannot be less than 1`);
+      nextQty = 1;
+    }
+    if (item.product.stock !== undefined && nextQty > item.product.stock) {
+      toast.error(`⚠️ Cannot add more than ${item.product.stock} items for "${item.product.title}"`);
+      nextQty = item.product.stock;
+    }
+
+    // If unchanged, just normalize input
+    if (nextQty === item.quantity) {
+      setQuantityInputs((prev) => ({ ...prev, [itemId]: String(item.quantity) }));
+      return;
+    }
+
+    handleUpdateQuantity(itemId, nextQty).then(() => {
+      setQuantityInputs((prev) => ({ ...prev, [itemId]: String(nextQty) }));
+    });
+  };
+
   const handleCheckout = () => {
     const authToken = token || localStorage.getItem('token');
 
     if (!authToken) {
       navigate("/auth", { state: { redirectTo: "/checkout" } });
     } else {
-      alert(`Hello ${user?.name || 'User'}! Proceeding to checkout...`);
+      const displayName = user?.name || t('GREETING') || 'User';
+      toast.success(t('cart.checkoutProceed', { name: displayName }));
       onCheckout();
       navigate("/checkout");
     }
@@ -126,7 +185,7 @@ const Cart: React.FC<CartProps> = ({ onCheckout }) => {
                             className="w-full h-full object-center object-cover" 
                           />
                         </div>
-                        <div className='flex-1 flex flex-col mr-3'>
+                        <div className={`flex-1 flex flex-col ${isRTL ? 'mr-3' : 'ml-3'}`}>
                           <div className="flex justify-between text-base font-medium text-amber-950">
                             <h3>{item.product.title}</h3>
                             <p className='mr-4'>${itemTotal.toFixed(2)}</p>
@@ -154,16 +213,39 @@ const Cart: React.FC<CartProps> = ({ onCheckout }) => {
                             <div className="flex flex-col">
                               <div className="flex items-center border rounded-md border-gray-200">
                                 <button 
-                                  onClick={() => handleUpdateQuantity(item.id, item.quantity - 1)} 
+                                  onClick={async () => {
+                                    const next = item.quantity - 1;
+                                    await handleUpdateQuantity(item.id, next);
+                                    setQuantityInputs((prev) => ({ ...prev, [item.id]: String(next) }));
+                                  }} 
                                   className="px-2 py-1 text-amber-950 disabled:opacity-50 hover:bg-gray-50" 
                                   disabled={item.quantity <= 1 || loading}
                                   title={item.quantity <= 1 ? "Cannot reduce below 1" : "Decrease quantity"}
                                 >
                                   <Minus size={16} />
                                 </button>
-                                <span className="px-2 py-1 text-amber-950 min-w-[2rem] text-center">{item.quantity}</span>
+                                <input
+                                  type="text"
+                                  inputMode="numeric"
+                                  pattern="[0-9]*"
+                                  className="px-2 py-1 text-amber-950 min-w-[3rem] max-w-[4rem] text-center outline-none border-x border-gray-200"
+                                  value={quantityInputs[item.id] ?? String(item.quantity)}
+                                  onChange={(e) => handleInputChange(item.id, e.target.value)}
+                                  onBlur={() => commitQuantityInput(item.id)}
+                                  onKeyDown={(e) => {
+                                    if (e.key === 'Enter') {
+                                      (e.target as HTMLInputElement).blur();
+                                    }
+                                  }}
+                                  disabled={loading}
+                                  aria-label="Quantity"
+                                />
                                 <button 
-                                  onClick={() => handleUpdateQuantity(item.id, item.quantity + 1)} 
+                                  onClick={async () => {
+                                    const next = item.quantity + 1;
+                                    await handleUpdateQuantity(item.id, next);
+                                    setQuantityInputs((prev) => ({ ...prev, [item.id]: String(next) }));
+                                  }} 
                                   className="px-2 py-1 text-amber-950 hover:text-amber-800 disabled:opacity-50 hover:bg-gray-50"
                                   disabled={loading || (item.product.stock !== undefined && item.quantity >= item.product.stock)}
                                   title={
