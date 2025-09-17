@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Lock, MapPin, User, Truck, CreditCard, ArrowLeft, ArrowRight, Plus, Check } from "lucide-react";
+import { Lock, MapPin, User, Truck, CreditCard, Check } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useCartStore } from "../../store/cartStore";
 import { useOrdersStore } from "../../store/ordersStore";
