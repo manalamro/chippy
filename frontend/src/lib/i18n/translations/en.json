@@ -2,6 +2,11 @@
   "cannotDeleteCategoryWithProducts": "Category '{{name}}' cannot be deleted because it has {{count}} product(s) assigned. Please reassign or delete the products first.",
   "checkout": {
     "title": "Checkout",
+    "addresses":"Address",
+    "shipping":"Shipping",
+    "payment":"paymnet",
+    "selectAddress":"selectAddress",
+    "addNewAddress":"addNewAddress",
     "customerInfo": "Customer Information",
     "fullName": "Full Name",
     "phone": "Phone Number",
@@ -215,6 +220,7 @@
     "or": "or",
     "goToCart": "back to cart",
     "continueGuest": "Continue as guest",
+    "notice": "Notice",
     "cancel": "Cancel",
     "guestNotice": "You can't purchase items as a guest. Please log in to continue.",
     "loginSuccess": "Login successful!",
@@ -235,7 +241,12 @@
     "increaseQuantity": "Increase quantity",
     "removeItem": "Remove item",
     "updating": "Updating...",
-    "added": "Added to Cart!"
+    "added": "Added to Cart!",
+    "errors": {
+      "stockLimit": "⚠️ Cannot add more than {{count}} for \"{{title}}\"",
+      "minQuantity": "⚠️ Quantity cannot be less than 1"
+    },
+    "checkoutProceed": "Hello {{name}}! Proceeding to checkout..."
   },
   "PRODUCTS": {
     "UI": {
@@ -257,7 +268,8 @@
       "NO_PRODUCTS_FOUND": "No products found",
       "NO_PRODUCTS_DESCRIPTION": "Try adjusting your search or filter criteria",
       "CLEAR_FILTERS": "Clear Filters",
-      "OUT_OF_STOCK": "Out of Stock"
+      "OUT_OF_STOCK": "Out of Stock",
+      "STOCK_LIMIT_REACHED": "You have reached the maximum quantity for this item"
     },
     "MANAGEMENT": {
       "ID": "ID",
@@ -370,7 +382,7 @@
   },
   "validation": {
     "required": "This field is required",
-    "email": "Invalid email address",
+    "email": "Invalid email address (example: user@example.com)",
     "password": "Password must be at least 8 characters",
     "phone": "Invalid phone number",
     "minLength": "Must be at least {{min}} characters",
