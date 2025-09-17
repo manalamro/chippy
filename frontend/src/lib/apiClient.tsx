@@ -6,7 +6,6 @@ const apiClient = axios.create({
   baseURL: import.meta.env.VITE_API_URL || "http://localhost:5000",
   headers: { "Content-Type": "application/json" },
 });
-console.log("API URL:", process.env.NEXT_PUBLIC_API_URL);
 
 // attach token automatically
 apiClient.interceptors.request.use((config) => {
