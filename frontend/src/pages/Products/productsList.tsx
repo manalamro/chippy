@@ -39,7 +39,6 @@ const ProductsList: React.FC = () => {
     loadCategories();
   }, [fetchCategories, t]);
 
-  // Set default category after categories are loaded
   useEffect(() => {
     if (categories.length > 0 && !selectedCategory) {
       setSelectedCategory('all');
@@ -48,13 +47,11 @@ const ProductsList: React.FC = () => {
 
   useEffect(() => {
     const loadProducts = async () => {
-      // Only load products if we have a category selected
       if (!selectedCategory) return;
-      
+
       setLoadingProducts(true);
       setError(null);
       try {
-        // Pass empty string for category if 'all' is selected
         const categoryToFetch = selectedCategory === 'all' ? '' : selectedCategory;
         await fetchProducts(categoryToFetch, searchQuery);
       } catch (err: any) {
@@ -73,7 +70,6 @@ const ProductsList: React.FC = () => {
         await fetchCart(userIdStr);
       } catch (err: any) {
         console.error('Error loading cart:', err);
-        // لا نعرض خطأ للسلة لأنها ليست حرجة
       }
     };
     loadCart();
@@ -81,11 +77,9 @@ const ProductsList: React.FC = () => {
 
   const handleAddToCart = async (product: any) => {
     try {
-      // تحقق من الكمية الموجودة بالسلة
       const existingItem = cart?.items.find((item) => item.product.id === product.id);
       const currentQty = existingItem ? existingItem.quantity : 0;
 
-      // منع تجاوز المخزون
       if (product.stock !== undefined && currentQty >= product.stock) {
         toast.error(t('PRODUCTS.UI.STOCK_LIMIT_REACHED', 'لقد وصلت للحد الأقصى من هذا المنتج في السلة'));
         return;
@@ -113,25 +107,16 @@ const ProductsList: React.FC = () => {
     }
   };
 
-  const handleNavigateToDetail = (slug: string) => {
-    navigate(`/products/${slug}`);
-  };
-
+  const handleNavigateToDetail = (slug: string) => navigate(`/products/${slug}`);
   const handleRetry = () => {
     setError(null);
-    if (selectedCategory) {
-      const categoryToFetch = selectedCategory === 'all' ? '' : selectedCategory;
-      fetchProducts(categoryToFetch, searchQuery);
-    }
-    if (categories.length === 0) {
-      fetchCategories();
-    }
+    if (selectedCategory) fetchProducts(selectedCategory === 'all' ? '' : selectedCategory, searchQuery);
+    if (categories.length === 0) fetchCategories();
   };
 
   return (
     <section className="min-h-screen py-12 px-4 sm:px-6 lg:px-8 bg-white/70" dir={i18n.dir()}>
       <div className="max-w-7xl mx-auto">
-        {/* Error Display */}
         {error && (
           <div className="mb-6 bg-red-50 border border-red-200 rounded-lg p-4">
             <div className="flex items-center justify-between">
@@ -139,10 +124,7 @@ const ProductsList: React.FC = () => {
                 <AlertCircle className="h-5 w-5 text-red-400 mr-2" />
                 <p className="text-red-800">{error}</p>
               </div>
-              <button
-                onClick={handleRetry}
-                className="flex items-center text-red-600 hover:text-red-800 transition-colors"
-              >
+              <button onClick={handleRetry} className="flex items-center text-red-600 hover:text-red-800 transition-colors">
                 <RefreshCw className="h-4 w-4 mr-1" />
                 {t('error.retry')}
               </button>
@@ -157,12 +139,11 @@ const ProductsList: React.FC = () => {
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
               <input
                 type="text"
-                placeholder={t('PRODUCTS.UI.SEARCH_PLACEHOLDER') || 'Search products...'}
+                placeholder={t('PRODUCTS.UI.SEARCH_PLACEHOLDER', 'Search products...')}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#A97155] focus:border-transparent"
               />
-              {/* Removed the clear (X) button as requested */}
             </div>
 
             <div className="w-full md:w-1/3">
@@ -177,7 +158,7 @@ const ProductsList: React.FC = () => {
                   onChange={(e) => setSelectedCategory(e.target.value)}
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#A97155] focus:border-transparent"
                 >
-                  <option value="all">{t('PRODUCTS.UI.ALL_CATEGORIES') || 'All Categories'}</option>
+                  <option value="all">{t('PRODUCTS.UI.ALL_CATEGORIES', 'All Categories')}</option>
                   {categories.map((cat) => (
                     <option key={cat.id} value={cat.slug}>
                       {cat.name}
@@ -189,7 +170,6 @@ const ProductsList: React.FC = () => {
           </div>
         </div>
 
-        {/* Products Grid */}
         {loadingProducts ? (
           <div className="text-center py-12">
             <div className="relative">
@@ -201,14 +181,8 @@ const ProductsList: React.FC = () => {
         ) : products.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {products.map((product) => (
-              <div
-                key={product.id}
-                className="group bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-100"
-              >
-                <div
-                  className="relative overflow-hidden cursor-pointer"
-                  onClick={() => handleNavigateToDetail(product.slug)}
-                >
+              <div key={product.id} className="group bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-100">
+                <div className="relative overflow-hidden cursor-pointer" onClick={() => handleNavigateToDetail(product.slug)}>
                   <img
                     src={product.images?.[0]?.url || 'https://via.placeholder.com/300'}
                     alt={product.images?.[0]?.alt || product.title}
@@ -218,14 +192,18 @@ const ProductsList: React.FC = () => {
                     <div className="absolute inset-0 bg-green-500 bg-opacity-90 flex items-center justify-center">
                       <div className="text-white text-center">
                         <CheckCircle className="w-8 h-8 mx-auto mb-2" />
-                        <p className="text-sm font-medium">تم إضافة المنتج للسلة!</p>
+                        <p className="text-sm font-medium">{t('cart.added', 'تم إضافة المنتج للسلة!')}</p>
                       </div>
                     </div>
                   )}
                 </div>
                 <div className="p-5">
-                  <h3 className="font-semibold text-lg mb-2">{product.title}</h3>
-                  <p className="text-gray-600 text-sm mb-3 line-clamp-2">{product.description}</p>
+                  <h3 className="font-semibold text-lg mb-2">
+                    {t(`products.${product.id}.title`, product.title)}
+                  </h3>
+                  <p className="text-gray-600 text-sm mb-3 line-clamp-2">
+                    {t(`products.${product.id}.description`, product.description || '')}
+                  </p>
                   <div className="flex items-center justify-between">
                     <span className="text-xl font-bold">${product.price}</span>
                     <button
@@ -235,7 +213,7 @@ const ProductsList: React.FC = () => {
                     >
                       {product.stock === 0
                         ? t('PRODUCTS.UI.OUT_OF_STOCK', 'Out of Stock')
-                        : t('PRODUCTS.UI.ADD_TO_CART') || 'إضافة للسلة'}
+                        : t(`products.${product.id}.add_to_cart`, 'إضافة للسلة')}
                     </button>
                   </div>
                 </div>
@@ -247,18 +225,15 @@ const ProductsList: React.FC = () => {
             <div className="w-16 h-16 bg-gradient-to-br from-gray-300 to-gray-400 rounded-full flex items-center justify-center mx-auto mb-4">
               <Search className="w-8 h-8 text-white" />
             </div>
-            <h3 className="text-2xl font-bold mb-4 text-gray-800">{t('PRODUCTS.UI.NO_PRODUCTS_FOUND') || 'No products found'}</h3>
-            <p className="text-gray-600 mb-6">{t('PRODUCTS.UI.NO_PRODUCTS_DESCRIPTION') || 'Try changing the search or filter'}</p>
+            <h3 className="text-2xl font-bold mb-4 text-gray-800">{t('PRODUCTS.UI.NO_PRODUCTS_FOUND', 'No products found')}</h3>
+            <p className="text-gray-600 mb-6">{t('PRODUCTS.UI.NO_PRODUCTS_DESCRIPTION', 'Try changing the search or filter')}</p>
             {(searchQuery || (selectedCategory && selectedCategory !== 'all')) && (
               <button
-                onClick={() => {
-                  setSearchQuery('');
-                  setSelectedCategory('all');
-                }}
+                onClick={() => { setSearchQuery(''); setSelectedCategory('all'); }}
                 className="inline-flex items-center px-4 py-2 bg-[#A97155] hover:bg-[#8f5e43] text-white rounded-lg transition-colors"
               >
                 <X className="w-4 h-4 mr-2" />
-                {t('PRODUCTS.UI.CLEAR_FILTERS') || 'Clear Filters'}
+                {t('PRODUCTS.UI.CLEAR_FILTERS', 'Clear Filters')}
               </button>
             )}
           </div>

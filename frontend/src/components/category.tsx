@@ -23,7 +23,6 @@ const SweetTreatsMenu = () => {
         await fetchCategories();
       } catch (err: any) {
         console.error('Error loading categories:', err);
-        // تحديد نوع الخطأ وإظهار رسالة مناسبة
         if (err?.message?.includes('Network') || err?.code === 'NETWORK_ERROR') {
           setError(t('error.networkProblem'));
         } else if (err?.response?.status >= 500) {
@@ -38,7 +37,6 @@ const SweetTreatsMenu = () => {
     loadCategories();
   }, [fetchCategories, t]);
 
-  // Responsive items per view
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth >= 1280) setItemsPerView(3);
@@ -65,7 +63,7 @@ const SweetTreatsMenu = () => {
   return (
     <div dir={isRTL ? 'rtl' : 'ltr'} className="min-h-screen flex flex-col items-center justify-center px-4 md:px-12 py-12 bg-[#7B4B27]">
       <h1 className="text-4xl md:text-5xl lg:text-5xl font-bold mb-10 text-white text-center">
-        {t('MENU.TITLE')}
+        {t('MENU.TITLE', 'Our categories')}
       </h1>
 
       {loading ? (
@@ -89,8 +87,8 @@ const SweetTreatsMenu = () => {
         </div>
       ) : filteredCategories.length === 0 ? (
         <div className="text-center">
-          <p className="text-white text-xl mb-4">{t('MENU.NO_CATEGORIES_FOUND')}</p>
-          <p className="text-white/80 text-sm mb-4">{t('MENU.NO_CATEGORIES_DESCRIPTION')}</p>
+          <p className="text-white text-xl mb-4">{t('MENU.NO_CATEGORIES_FOUND', 'No categories found')}</p>
+          <p className="text-white/80 text-sm mb-4">{t('MENU.NO_CATEGORIES_DESCRIPTION', 'No categories are currently available')}</p>
           <button 
             onClick={() => window.location.reload()} 
             className="text-white hover:text-white/80 underline transition-colors"
@@ -121,14 +119,14 @@ const SweetTreatsMenu = () => {
                 <div className="flex flex-col items-center justify-between h-full p-4 sm:p-6">
                   <div className="w-full h-32 sm:h-40 flex items-center justify-center rounded-lg bg-[#E6D5C3] mb-4">
                     {cat.image_url ? (
-                      <img src={cat.image_url} alt={t(`MENU.CATEGORIES.${cat.slug.toUpperCase()}`)} className="w-full h-full object-cover rounded-lg" />
+                      <img src={cat.image_url} alt={t(`MENU.CATEGORIES.${cat.slug.toUpperCase()}`, cat.name)} className="w-full h-full object-cover rounded-lg" />
                     ) : (
                       <span className="text-6xl">{cat.image}</span>
                     )}
                   </div>
                   <div className="text-center">
                     <h3 className={`font-semibold mb-2 ${index === Math.floor(itemsPerView / 2) ? 'text-[#7B4B27]' : 'text-[#3E2723]'}`}>
-                      {t(`MENU.CATEGORIES.${cat.slug.toUpperCase()}`)}
+                      {t(`MENU.CATEGORIES.${cat.slug.toUpperCase()}`, cat.name)}
                     </h3>
                   </div>
                 </div>
@@ -150,7 +148,7 @@ const SweetTreatsMenu = () => {
         onClick={() => navigate('/products')}
         className="mt-10 w-full sm:w-auto px-6 md:px-8 lg:px-12 py-3 md:py-4 lg:py-5 rounded-full bg-gradient-to-r from-[#A97155] to-[#D9A441] text-white font-semibold text-lg md:text-xl lg:text-2xl shadow-md hover:scale-105 transition-all"
       >
-        {t('MENU.SEE_MORE')}
+        {t('MENU.SEE_MORE', 'See all products')}
       </button>
     </div>
   );

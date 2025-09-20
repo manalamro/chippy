@@ -13,7 +13,7 @@ const ProductDetail: React.FC = () => {
   const { selectedProduct, fetchProductBySlug, loading, clearSelectedProduct } = useProductStore();
   const { addItemToCart, cart } = useCartStore();
   const { user } = useUserStore();
-  
+
   const [error, setError] = useState<string | null>(null);
   const [loadingProduct, setLoadingProduct] = useState(false);
   const [addedToCart, setAddedToCart] = useState(false);
@@ -22,7 +22,7 @@ const ProductDetail: React.FC = () => {
   useEffect(() => {
     const loadProduct = async () => {
       if (!slug) return;
-      
+
       setLoadingProduct(true);
       setError(null);
       try {
@@ -34,7 +34,7 @@ const ProductDetail: React.FC = () => {
         setLoadingProduct(false);
       }
     };
-    
+
     loadProduct();
     return () => clearSelectedProduct();
   }, [slug, fetchProductBySlug, clearSelectedProduct, t]);
@@ -44,17 +44,15 @@ const ProductDetail: React.FC = () => {
 
     setAddingToCart(true);
     setError(null);
-    
+
     try {
-      // تحقق من الكمية الموجودة بالسلة
       const existingItem = cart?.items.find((item) => item.product.id === selectedProduct.id);
       const currentQty = existingItem ? existingItem.quantity : 0;
 
-    // منع تجاوز المخزون
-    if (selectedProduct.stock !== undefined && currentQty >= selectedProduct.stock) {
-      toast.error(t('PRODUCTS.UI.STOCK_LIMIT_REACHED', 'لقد وصلت للحد الأقصى من هذا المنتج في السلة'));
-      return;
-    }
+      if (selectedProduct.stock !== undefined && currentQty >= selectedProduct.stock) {
+        toast.error(t('PRODUCTS.UI.STOCK_LIMIT_REACHED', 'لقد وصلت للحد الأقصى من هذا المنتج في السلة'));
+        return;
+      }
 
       const guestCartId = localStorage.getItem('guest_cart_id');
       const cartId = user?.id ? String(user.id) : guestCartId || undefined;
@@ -69,7 +67,7 @@ const ProductDetail: React.FC = () => {
       };
 
       await addItemToCart(selectedProduct.id, 1, productForCart, cartId);
-      
+
       setAddedToCart(true);
       setTimeout(() => setAddedToCart(false), 3000);
     } catch (err: any) {
@@ -80,40 +78,30 @@ const ProductDetail: React.FC = () => {
     }
   };
 
-  const handleRetry = () => {
-    setError(null);
-    if (slug) {
-      fetchProductBySlug(slug);
-    }
-  };
+  const handleRetry = () => { setError(null); if (slug) fetchProductBySlug(slug); };
 
   if (loadingProduct || loading) {
     return (
-      <div className="max-w-5xl mx-auto py-12 px-4">
-        <div className="text-center">
-          <div className="relative">
-            <div className="animate-spin rounded-full h-16 w-16 border-4 border-gray-200 border-t-[#A97155] mx-auto mb-6"></div>
-            <div className="absolute inset-0 rounded-full h-16 w-16 border-4 border-transparent border-r-[#A97155]/40 mx-auto animate-spin" style={{animationDirection: 'reverse', animationDuration: '1.5s'}}></div>
-          </div>
-          <p className="text-gray-600 text-xl">{t('loading')}</p>
+      <div className="max-w-5xl mx-auto py-12 px-4 text-center">
+        <div className="relative">
+          <div className="animate-spin rounded-full h-16 w-16 border-4 border-gray-200 border-t-[#A97155] mx-auto mb-6"></div>
+          <div className="absolute inset-0 rounded-full h-16 w-16 border-4 border-transparent border-r-[#A97155]/40 mx-auto animate-spin" style={{animationDirection: 'reverse', animationDuration: '1.5s'}}></div>
         </div>
+        <p className="text-gray-600 text-xl">{t('loading')}</p>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="max-w-5xl mx-auto py-12 px-4">
-        <div className="text-center bg-red-50 border border-red-200 rounded-lg p-8">
+      <div className="max-w-5xl mx-auto py-12 px-4 text-center">
+        <div className="bg-red-50 border border-red-200 rounded-lg p-8">
           <div className="w-16 h-16 bg-gradient-to-br from-red-400 to-red-600 rounded-full flex items-center justify-center mx-auto mb-4">
             <AlertCircle className="w-8 h-8 text-white" />
           </div>
           <h3 className="text-xl font-bold mb-2 text-red-800">{t('error.generic')}</h3>
           <p className="text-red-600 mb-6">{error}</p>
-          <button
-            onClick={handleRetry}
-            className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-medium rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
-          >
+          <button onClick={handleRetry} className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-medium rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl">
             <RefreshCw className="w-4 h-4 mr-2" />
             {t('error.retry')}
           </button>
@@ -124,17 +112,14 @@ const ProductDetail: React.FC = () => {
 
   if (!selectedProduct) {
     return (
-      <div className="max-w-5xl mx-auto py-12 px-4">
-        <div className="text-center bg-gray-50 border border-gray-200 rounded-lg p-8">
+      <div className="max-w-5xl mx-auto py-12 px-4 text-center">
+        <div className="bg-gray-50 border border-gray-200 rounded-lg p-8">
           <div className="w-16 h-16 bg-gradient-to-br from-gray-400 to-gray-600 rounded-full flex items-center justify-center mx-auto mb-4">
             <AlertCircle className="w-8 h-8 text-white" />
           </div>
-          <h3 className="text-xl font-bold mb-2 text-gray-800">{t('PRODUCTS.UI.NO_PRODUCTS_FOUND') || 'Product not found'}</h3>
+          <h3 className="text-xl font-bold mb-2 text-gray-800">{t('PRODUCTS.UI.NO_PRODUCTS_FOUND', 'Product not found')}</h3>
           <p className="text-gray-600 mb-6">The product you're looking for doesn't exist or has been removed.</p>
-          <button
-            onClick={() => window.history.back()}
-            className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-gray-500 to-gray-600 hover:from-gray-600 hover:to-gray-700 text-white font-medium rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
-          >
+          <button onClick={() => window.history.back()} className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-gray-500 to-gray-600 hover:from-gray-600 hover:to-gray-700 text-white font-medium rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl">
             <ArrowLeft className="w-4 h-4 mr-2" />
             Go Back
           </button>
@@ -146,31 +131,21 @@ const ProductDetail: React.FC = () => {
   return (
     <div className="max-w-5xl mx-auto py-12 px-4 flex flex-col md:flex-row gap-6">
       <div className="md:w-1/2">
-        <img
-          src={selectedProduct.images?.[0]?.url || 'https://via.placeholder.com/400'}
-          alt={selectedProduct.images?.[0]?.alt || selectedProduct.title}
-          className="w-full h-96 object-cover rounded-2xl"
-        />
+        <img src={selectedProduct.images?.[0]?.url || 'https://via.placeholder.com/400'} alt={selectedProduct.images?.[0]?.alt || selectedProduct.title} className="w-full h-96 object-cover rounded-2xl" />
       </div>
       <div className="md:w-1/2 flex flex-col justify-between">
         <div>
-          <h1 className="text-3xl font-bold mb-4">{selectedProduct.title}</h1>
-          <p className="text-gray-600 mb-4">{selectedProduct.description}</p>
+          <h1 className="text-3xl font-bold mb-4">{t(`products.${selectedProduct.id}.title`, selectedProduct.title)}</h1>
+          <p className="text-gray-600 mb-4">{t(`products.${selectedProduct.id}.description`, selectedProduct.description || '')}</p>
           <p className="text-xl font-bold mb-2">${selectedProduct.price}</p>
-          <p className="text-gray-500 mb-4">
-            {selectedProduct.stock} {t('PRODUCTS.UI.STOCK', 'in stock')}
-          </p>
-          <p className="text-gray-500 mb-4">
-            {t('PRODUCTS.UI.CATEGORY', 'Category')}: {selectedProduct.category_name}
-          </p>
-          <p className="text-gray-500 mb-4">
-            {t('PRODUCTS.UI.SKU', 'SKU')}: {selectedProduct.sku}
-          </p>
+          <p className="text-gray-500 mb-4">{selectedProduct.stock} {t('PRODUCTS.UI.STOCK', 'in stock')}</p>
+          <p className="text-gray-500 mb-4">{t('PRODUCTS.UI.CATEGORY', 'Category')}: {selectedProduct.category_name}</p>
+          <p className="text-gray-500 mb-4">{t('PRODUCTS.UI.SKU', 'SKU')}: {selectedProduct.sku}</p>
         </div>
         {addedToCart ? (
           <div className="flex items-center justify-center px-6 py-3 rounded-lg bg-green-500 text-white font-medium">
             <CheckCircle className="w-5 h-5 mr-2" />
-            {t('cart.added') || 'Added to Cart!'}
+            {t('cart.added', 'Added to Cart!')}
           </div>
         ) : (
           <button
@@ -181,12 +156,12 @@ const ProductDetail: React.FC = () => {
             {addingToCart ? (
               <>
                 <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                {t('cart.updating') || 'Adding...'}
+                {t('cart.updating', 'Adding...')}
               </>
             ) : selectedProduct.stock === 0 ? (
               t('PRODUCTS.UI.OUT_OF_STOCK', 'Out of Stock')
             ) : (
-              t('PRODUCTS.UI.ADD_TO_CART', 'Add to Cart')
+              t(`products.${selectedProduct.id}.add_to_cart`, 'إضافة للسلة')
             )}
           </button>
         )}

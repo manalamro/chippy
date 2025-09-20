@@ -6,12 +6,14 @@ import { useTranslation } from "react-i18next";
 type CategoryFormProps = {
   onClose: () => void;
   onSuccess: () => void;
-  category?: { id: number; name: string; slug: string };
+  category?: { id: number; name: string; slug: string; image?: string; image_url?: string };
 };
 
 const CategoryForm: React.FC<CategoryFormProps> = ({ onClose, onSuccess, category }) => {
   const [name, setName] = useState(category?.name || "");
   const [slug, setSlug] = useState(category?.slug || "");
+  const [image, setImage] = useState(category?.image || "");
+  const [imageUrl, setImageUrl] = useState(category?.image_url || "");
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [apiError, setApiError] = useState<string>("");
@@ -34,10 +36,17 @@ const CategoryForm: React.FC<CategoryFormProps> = ({ onClose, onSuccess, categor
 
     setIsSubmitting(true);
     try {
+      const categoryData = { 
+        name, 
+        slug, 
+        image: image || null, 
+        image_url: imageUrl || null 
+      };
+
       if (category) {
-        await updateCategory(category.id, { name, slug });
+        await updateCategory(category.id, categoryData);
       } else {
-        await createCategory({ name, slug });
+        await createCategory(categoryData);
       }
       onSuccess();
       onClose();
@@ -86,6 +95,7 @@ const CategoryForm: React.FC<CategoryFormProps> = ({ onClose, onSuccess, categor
           </div>
         )}
 
+        {/* Name Field */}
         <label className="block mb-1 font-semibold text-[#3E2723]">{t("name")}</label>
         <input
           type="text"
@@ -102,6 +112,7 @@ const CategoryForm: React.FC<CategoryFormProps> = ({ onClose, onSuccess, categor
         />
         {errors.name && <p className="text-red-500 text-sm mb-2">{errors.name}</p>}
 
+        {/* Slug Field */}
         <label className="block mb-1 font-semibold text-[#3E2723]">{t("slug")}</label>
         <input
           type="text"
@@ -112,11 +123,70 @@ const CategoryForm: React.FC<CategoryFormProps> = ({ onClose, onSuccess, categor
             if (errors.slug) setErrors({ ...errors, slug: "" });
             setApiError("");
           }}
-          className={`w-full p-2 mb-4 border rounded ${errors.slug ? "border-red-500" : "border-gray-300"}`}
+          className={`w-full p-2 mb-3 border rounded ${errors.slug ? "border-red-500" : "border-gray-300"}`}
           required
           disabled={isSubmitting}
         />
         {errors.slug && <p className="text-red-500 text-sm mb-2">{errors.slug}</p>}
+
+        {/* Image Field (emoji/text) */}
+        <label className="block mb-1 font-semibold text-[#3E2723]">
+          {t("Image (emoji or text)")}
+        </label>
+        <input
+          type="text"
+          placeholder={t("e.g. 🍪 or COOKIE")}
+          value={image}
+          onChange={(e) => {
+            setImage(e.target.value);
+            setApiError("");
+          }}
+          className="w-full p-2 mb-3 border border-gray-300 rounded"
+          disabled={isSubmitting}
+        />
+        <p className="text-sm text-gray-500 mb-3">
+          {t("Enter an emoji or text symbol for the category")}
+        </p>
+
+        {/* Image URL Field */}
+        <label className="block mb-1 font-semibold text-[#3E2723]">
+          {t("Image URL")}
+        </label>
+        <input
+          type="url"
+          placeholder={t("https://example.com/image.jpg")}
+          value={imageUrl}
+          onChange={(e) => {
+            setImageUrl(e.target.value);
+            setApiError("");
+          }}
+          className="w-full p-2 mb-3 border border-gray-300 rounded"
+          disabled={isSubmitting}
+        />
+        <p className="text-sm text-gray-500 mb-4">
+          {t("Optional: URL for category image")}
+        </p>
+
+        {/* Preview Section */}
+        {(image || imageUrl) && (
+          <div className="mb-4 p-3 bg-gray-50 rounded border border-gray-200">
+            <p className="text-sm font-semibold text-[#3E2723] mb-2">{t("Preview")}:</p>
+            <div className="flex items-center justify-center h-20 bg-white rounded border">
+              {imageUrl ? (
+                <img 
+                  src={imageUrl} 
+                  alt={t("Category preview")}
+                  className="max-h-16 max-w-full object-contain"
+                  onError={(e) => {
+                    e.currentTarget.style.display = 'none';
+                  }}
+                />
+              ) : image ? (
+                <span className="text-3xl">{image}</span>
+              ) : null}
+            </div>
+          </div>
+        )}
 
         <div className="flex justify-end gap-3">
           <button
