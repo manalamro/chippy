@@ -60,13 +60,13 @@ const Cart: React.FC<CartProps> = ({ onCheckout }) => {
 
     // Prevent exceeding stock
     if (item.product.stock !== undefined && newQuantity > item.product.stock) {
-      toast.error(`⚠️ Cannot add more than ${item.product.stock} items for "${item.product.title}"`);
+      toast.error(t('cart.errors.stockLimit', { count: item.product.stock, title: item.product.title }));
       return;
     }
 
     // Prevent reducing below 1
     if (newQuantity < 1) {
-      toast.error(`⚠️ Quantity cannot be less than 1`);
+      toast.error(t('cart.errors.minQuantity'));
       return;
     }
 
@@ -105,11 +105,11 @@ const Cart: React.FC<CartProps> = ({ onCheckout }) => {
 
     let nextQty = parsed;
     if (nextQty < 1) {
-      toast.error(`⚠️ Quantity cannot be less than 1`);
+      toast.error(t('cart.errors.minQuantity'));
       nextQty = 1;
     }
     if (item.product.stock !== undefined && nextQty > item.product.stock) {
-      toast.error(`⚠️ Cannot add more than ${item.product.stock} items for "${item.product.title}"`);
+      toast.error(t('cart.errors.stockLimit', { count: item.product.stock, title: item.product.title }));
       nextQty = item.product.stock;
     }
 
@@ -144,7 +144,7 @@ const Cart: React.FC<CartProps> = ({ onCheckout }) => {
         <div className="max-w-4xl mx-auto">
           <div className="text-center py-12">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-amber-900 mx-auto"></div>
-            <p className="mt-4 text-amber-900">{t("cart.loading") || "Loading cart..."}</p>
+            <p className="mt-4 text-amber-900">{t("loading")}</p>
           </div>
         </div>
       </div>
@@ -195,17 +195,17 @@ const Cart: React.FC<CartProps> = ({ onCheckout }) => {
                           {/* Stock warnings */}
                           {hasExceededStock && (
                             <p className="mt-1 text-xs text-red-600 font-medium">
-                              ⚠️ Only {item.product.stock} in stock - please reduce quantity
+                              {t('PRODUCTS.UI.ONLY_IN_STOCK', { count: item.product.stock })}
                             </p>
                           )}
                           {isAtStockLimit && !hasExceededStock && (
                             <p className="mt-1 text-xs text-orange-600">
-                              📦 Maximum stock limit reached ({item.product.stock} available)
+                              {t('PRODUCTS.UI.MAX_STOCK_REACHED', { count: item.product.stock })}
                             </p>
                           )}
                           {item.product.stock !== undefined && item.product.stock > 0 && !isAtStockLimit && !hasExceededStock && (
                             <p className="mt-1 text-xs text-gray-500">
-                              {item.product.stock - item.quantity} more available
+                              {t('PRODUCTS.UI.MORE_AVAILABLE', { count: item.product.stock - item.quantity })}
                             </p>
                           )}
 
@@ -220,7 +220,7 @@ const Cart: React.FC<CartProps> = ({ onCheckout }) => {
                                   }} 
                                   className="px-2 py-1 text-amber-950 disabled:opacity-50 hover:bg-gray-50" 
                                   disabled={item.quantity <= 1 || loading}
-                                  title={item.quantity <= 1 ? "Cannot reduce below 1" : "Decrease quantity"}
+                                  title={item.quantity <= 1 ? t('PRODUCTS.UI.CANNOT_REDUCE_BELOW') : t('PRODUCTS.UI.DECREASE_QUANTITY')}
                                 >
                                   <Minus size={16} />
                                 </button>
@@ -250,8 +250,8 @@ const Cart: React.FC<CartProps> = ({ onCheckout }) => {
                                   disabled={loading || (item.product.stock !== undefined && item.quantity >= item.product.stock)}
                                   title={
                                     isAtStockLimit 
-                                      ? `Maximum stock limit reached (${item.product.stock} available)`
-                                      : "Increase quantity"
+                                      ? t('PRODUCTS.UI.MAX_STOCK_REACHED_TITLE', { count: item.product.stock })
+                                      : t('PRODUCTS.UI.INCREASE_QUANTITY')
                                   }
                                 >
                                   <Plus size={16} />
@@ -260,7 +260,7 @@ const Cart: React.FC<CartProps> = ({ onCheckout }) => {
 
                               {isAtStockLimit && (
                                 <p className="mt-1 text-xs text-gray-500 text-center">
-                                  Can't add more - max stock reached
+                                  {t('PRODUCTS.UI.CANT_ADD_MORE')}
                                 </p>
                               )}
                             </div>
@@ -269,7 +269,7 @@ const Cart: React.FC<CartProps> = ({ onCheckout }) => {
                               onClick={() => handleRemoveItem(item.id)} 
                               className="font-medium text-red-600 hover:text-red-500 disabled:opacity-50 p-1 rounded hover:bg-red-50"
                               disabled={loading}
-                              title="Remove item from cart"
+                              title={t('PRODUCTS.UI.REMOVE_ITEM')}
                             >
                               <Trash2 size={16} />
                             </button>
@@ -295,7 +295,7 @@ const Cart: React.FC<CartProps> = ({ onCheckout }) => {
                     {loading ? (
                       <>
                         <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                        {t('cart.updating') || 'Updating...'}
+                        {t('cart.updating')}
                       </>
                     ) : (
                       t('cart.checkout')

@@ -4,9 +4,9 @@
     "title": "Checkout",
     "addresses":"Address",
     "shipping":"Shipping",
-    "payment":"paymnet",
-    "selectAddress":"selectAddress",
-    "addNewAddress":"addNewAddress",
+    "payment":"Payment",
+    "selectAddress":"Select Shipping Address",
+    "addNewAddress":"Add New Address",
     "customerInfo": "Customer Information",
     "fullName": "Full Name",
     "phone": "Phone Number",
@@ -39,7 +39,12 @@
     "orderSuccessTitle": "Order Placed Successfully!",
     "orderSuccessMessage": "Thank you, your order has been received and will be processed soon",
     "viewMyOrders": "View My Orders",
-    "continueShopping": "Continue Shopping"
+    "continueShopping": "Continue Shopping",
+    "useThisAddress": "Use This Address",
+    "noAddresses": "No saved addresses",
+    "default": "Default",
+    "loadingAddresses": "Loading addresses...",
+    "street": "Street"
   },
   "adminDashboard": "Admin Dashboard",
   "adminSubtitle": "Manage products, categories, and orders",
@@ -86,7 +91,7 @@
   "confirmDeleteCategory": "Are you sure you want to delete category \"{{name}}\"? All products in this category will be moved to \"Uncategorized\".",
   "home": "Home",
   "products": "Products",
-  "about": "aboutUs",
+  "about": "About Us",
   "brandName": "CHIPPY",
   "searchButton": "Search",
   "userProfile": "User Profile",
@@ -269,7 +274,22 @@
       "NO_PRODUCTS_DESCRIPTION": "Try adjusting your search or filter criteria",
       "CLEAR_FILTERS": "Clear Filters",
       "OUT_OF_STOCK": "Out of Stock",
-      "STOCK_LIMIT_REACHED": "You have reached the maximum quantity for this item"
+      "STOCK_LIMIT_REACHED": "You have reached the maximum quantity for this item",
+      "PRODUCT_NOT_FOUND": "The product you're looking for doesn't exist or has been removed",
+      "GO_BACK": "Go Back",
+      "ONLY_IN_STOCK": "⚠️ Only {{count}} in stock - please reduce quantity",
+      "MAX_STOCK_REACHED": "📦 Maximum stock limit reached ({{count}} available)",
+      "CANT_ADD_MORE": "Can't add more - max stock reached",
+      "MORE_AVAILABLE": "{{count}} more available",
+      "CANNOT_REDUCE_BELOW": "Cannot reduce below 1",
+      "DECREASE_QUANTITY": "Decrease quantity",
+      "INCREASE_QUANTITY": "Increase quantity",
+      "REMOVE_ITEM": "Remove item from cart",
+      "MAX_STOCK_REACHED_TITLE": "Maximum stock limit reached ({{count}} available)",
+      "DESCRIPTION": "Description",
+      "QUANTITY": "Quantity",
+      "TOTAL_PRICE": "Total Price",
+      "IMAGES": "Product Image"
     },
     "MANAGEMENT": {
       "ID": "ID",
@@ -319,7 +339,11 @@
     "SLUG": "Slug",
     "ERROR": {
       "NAME_REQUIRED": "Name is required",
-      "SLUG_REQUIRED": "Slug is required"
+        "SLUG_REQUIRED": "Slug is required",
+        "DESCRIPTION_REQUIRED": "Description is required",
+        "PRICE_NEGATIVE": "Price cannot be negative",
+        "STOCK_NEGATIVE": "Stock cannot be negative",
+        "INVALID_URL": "Invalid image URL"
     }
   },
   "error": {

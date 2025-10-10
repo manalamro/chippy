@@ -50,7 +50,7 @@ const ProductDetail: React.FC = () => {
       const currentQty = existingItem ? existingItem.quantity : 0;
 
       if (selectedProduct.stock !== undefined && currentQty >= selectedProduct.stock) {
-        toast.error(t('PRODUCTS.UI.STOCK_LIMIT_REACHED', 'لقد وصلت للحد الأقصى من هذا المنتج في السلة'));
+        toast.error(t('PRODUCTS.UI.STOCK_LIMIT_REACHED'));
         return;
       }
 
@@ -72,7 +72,7 @@ const ProductDetail: React.FC = () => {
       setTimeout(() => setAddedToCart(false), 3000);
     } catch (err: any) {
       console.error('Failed to add item to cart:', err);
-      setError(t('error.generic') || 'حدث خطأ أثناء إضافة المنتج للسلة');
+      setError(t('error.generic'));
     } finally {
       setAddingToCart(false);
     }
@@ -117,11 +117,11 @@ const ProductDetail: React.FC = () => {
           <div className="w-16 h-16 bg-gradient-to-br from-gray-400 to-gray-600 rounded-full flex items-center justify-center mx-auto mb-4">
             <AlertCircle className="w-8 h-8 text-white" />
           </div>
-          <h3 className="text-xl font-bold mb-2 text-gray-800">{t('PRODUCTS.UI.NO_PRODUCTS_FOUND', 'Product not found')}</h3>
-          <p className="text-gray-600 mb-6">The product you're looking for doesn't exist or has been removed.</p>
+          <h3 className="text-xl font-bold mb-2 text-gray-800">{t('PRODUCTS.UI.NO_PRODUCTS_FOUND')}</h3>
+          <p className="text-gray-600 mb-6">{t('PRODUCTS.UI.PRODUCT_NOT_FOUND')}</p>
           <button onClick={() => window.history.back()} className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-gray-500 to-gray-600 hover:from-gray-600 hover:to-gray-700 text-white font-medium rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl">
             <ArrowLeft className="w-4 h-4 mr-2" />
-            Go Back
+            {t('PRODUCTS.UI.GO_BACK')}
           </button>
         </div>
       </div>
@@ -138,14 +138,14 @@ const ProductDetail: React.FC = () => {
           <h1 className="text-3xl font-bold mb-4">{t(`products.${selectedProduct.id}.title`, selectedProduct.title)}</h1>
           <p className="text-gray-600 mb-4">{t(`products.${selectedProduct.id}.description`, selectedProduct.description || '')}</p>
           <p className="text-xl font-bold mb-2">${selectedProduct.price}</p>
-          <p className="text-gray-500 mb-4">{selectedProduct.stock} {t('PRODUCTS.UI.STOCK', 'in stock')}</p>
-          <p className="text-gray-500 mb-4">{t('PRODUCTS.UI.CATEGORY', 'Category')}: {selectedProduct.category_name}</p>
-          <p className="text-gray-500 mb-4">{t('PRODUCTS.UI.SKU', 'SKU')}: {selectedProduct.sku}</p>
+          <p className="text-gray-500 mb-4">{selectedProduct.stock} {t('PRODUCTS.UI.STOCK')}</p>
+          <p className="text-gray-500 mb-4">{t('PRODUCTS.UI.CATEGORY')}: {selectedProduct.category_name}</p>
+          <p className="text-gray-500 mb-4">{t('PRODUCTS.UI.SKU')}: {selectedProduct.sku}</p>
         </div>
         {addedToCart ? (
           <div className="flex items-center justify-center px-6 py-3 rounded-lg bg-green-500 text-white font-medium">
             <CheckCircle className="w-5 h-5 mr-2" />
-            {t('cart.added', 'Added to Cart!')}
+            {t('cart.added')}
           </div>
         ) : (
           <button
@@ -156,12 +156,12 @@ const ProductDetail: React.FC = () => {
             {addingToCart ? (
               <>
                 <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                {t('cart.updating', 'Adding...')}
+                {t('cart.updating')}
               </>
             ) : selectedProduct.stock === 0 ? (
-              t('PRODUCTS.UI.OUT_OF_STOCK', 'Out of Stock')
+              t('PRODUCTS.UI.OUT_OF_STOCK')
             ) : (
-              t(`products.${selectedProduct.id}.add_to_cart`, 'إضافة للسلة')
+              t('PRODUCTS.UI.ADD_TO_CART')
             )}
           </button>
         )}

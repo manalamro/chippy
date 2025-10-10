@@ -81,7 +81,7 @@ const ProductsList: React.FC = () => {
       const currentQty = existingItem ? existingItem.quantity : 0;
 
       if (product.stock !== undefined && currentQty >= product.stock) {
-        toast.error(t('PRODUCTS.UI.STOCK_LIMIT_REACHED', 'لقد وصلت للحد الأقصى من هذا المنتج في السلة'));
+        toast.error(t('PRODUCTS.UI.STOCK_LIMIT_REACHED'));
         return;
       }
 
@@ -103,7 +103,7 @@ const ProductsList: React.FC = () => {
       setTimeout(() => setAddedToCart(null), 2000);
     } catch (err: any) {
       console.error('Failed to add item to cart:', err);
-      toast.error(t('error.generic') || 'حدث خطأ أثناء إضافة المنتج للسلة');
+      toast.error(t('error.generic'));
     }
   };
 
@@ -139,7 +139,7 @@ const ProductsList: React.FC = () => {
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
               <input
                 type="text"
-                placeholder={t('PRODUCTS.UI.SEARCH_PLACEHOLDER', 'Search products...')}
+                placeholder={t('PRODUCTS.UI.SEARCH_PLACEHOLDER')}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#A97155] focus:border-transparent"
@@ -158,7 +158,7 @@ const ProductsList: React.FC = () => {
                   onChange={(e) => setSelectedCategory(e.target.value)}
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#A97155] focus:border-transparent"
                 >
-                  <option value="all">{t('PRODUCTS.UI.ALL_CATEGORIES', 'All Categories')}</option>
+                  <option value="all">{t('PRODUCTS.UI.ALL_CATEGORIES')}</option>
                   {categories.map((cat) => (
                     <option key={cat.id} value={cat.slug}>
                       {cat.name}
@@ -192,17 +192,17 @@ const ProductsList: React.FC = () => {
                     <div className="absolute inset-0 bg-green-500 bg-opacity-90 flex items-center justify-center">
                       <div className="text-white text-center">
                         <CheckCircle className="w-8 h-8 mx-auto mb-2" />
-                        <p className="text-sm font-medium">{t('cart.added', 'تم إضافة المنتج للسلة!')}</p>
+                        <p className="text-sm font-medium">{t('cart.added')}</p>
                       </div>
                     </div>
                   )}
                 </div>
                 <div className="p-5">
                   <h3 className="font-semibold text-lg mb-2">
-                    {t(`products.${product.id}.title`, product.title)}
+                    {product.title}
                   </h3>
                   <p className="text-gray-600 text-sm mb-3 line-clamp-2">
-                    {t(`products.${product.id}.description`, product.description || '')}
+                    {product.description || ''}
                   </p>
                   <div className="flex items-center justify-between">
                     <span className="text-xl font-bold">${product.price}</span>
@@ -212,8 +212,8 @@ const ProductsList: React.FC = () => {
                       disabled={product.stock === 0}
                     >
                       {product.stock === 0
-                        ? t('PRODUCTS.UI.OUT_OF_STOCK', 'Out of Stock')
-                        : t(`products.${product.id}.add_to_cart`, 'إضافة للسلة')}
+                        ? t('PRODUCTS.UI.OUT_OF_STOCK')
+                        : t('PRODUCTS.UI.ADD_TO_CART')}
                     </button>
                   </div>
                 </div>
@@ -225,15 +225,15 @@ const ProductsList: React.FC = () => {
             <div className="w-16 h-16 bg-gradient-to-br from-gray-300 to-gray-400 rounded-full flex items-center justify-center mx-auto mb-4">
               <Search className="w-8 h-8 text-white" />
             </div>
-            <h3 className="text-2xl font-bold mb-4 text-gray-800">{t('PRODUCTS.UI.NO_PRODUCTS_FOUND', 'No products found')}</h3>
-            <p className="text-gray-600 mb-6">{t('PRODUCTS.UI.NO_PRODUCTS_DESCRIPTION', 'Try changing the search or filter')}</p>
+            <h3 className="text-2xl font-bold mb-4 text-gray-800">{t('PRODUCTS.UI.NO_PRODUCTS_FOUND')}</h3>
+            <p className="text-gray-600 mb-6">{t('PRODUCTS.UI.NO_PRODUCTS_DESCRIPTION')}</p>
             {(searchQuery || (selectedCategory && selectedCategory !== 'all')) && (
               <button
                 onClick={() => { setSearchQuery(''); setSelectedCategory('all'); }}
                 className="inline-flex items-center px-4 py-2 bg-[#A97155] hover:bg-[#8f5e43] text-white rounded-lg transition-colors"
               >
                 <X className="w-4 h-4 mr-2" />
-                {t('PRODUCTS.UI.CLEAR_FILTERS', 'Clear Filters')}
+                {t('PRODUCTS.UI.CLEAR_FILTERS')}
               </button>
             )}
           </div>
