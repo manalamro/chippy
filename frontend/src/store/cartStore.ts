@@ -108,17 +108,60 @@ export const useCartStore = create<CartState>()(
           const isAuthenticated = currentCart?.userId || token;
 
           if (isAuthenticated && token) {
-            await api.addToCart(productId, quantity);
-            const updatedBackendCart = await api.getCart();
-            set({
-              cart: {
-                id: currentCart?.id || `user-authenticated`,
-                userId: currentCart?.userId || 'authenticated',
-                items: mapBackendItemsToFrontend(updatedBackendCart.items),
-                total: updatedBackendCart.total
-              },
-              loading: false
-            });
+            try {
+              await api.addToCart(productId, quantity);
+              const updatedBackendCart = await api.getCart();
+              set({
+                cart: {
+                  id: currentCart?.id || `user-authenticated`,
+                  userId: currentCart?.userId || 'authenticated',
+                  items: mapBackendItemsToFrontend(updatedBackendCart.items),
+                  total: updatedBackendCart.total
+                },
+                loading: false
+              });
+            } catch (e: any) {
+              // في حالة انتهاء صلاحية التوكن أو 401، حوّل تلقائيًا إلى سلة ضيف
+              if (e?.response?.status === 401) {
+                localStorage.removeItem('token');
+                const guestCart = currentCart || { id: cartId || `guest-${Date.now()}`, userId: null, items: [] };
+                const existingIndex = guestCart.items.findIndex(item => item.product.id === productId);
+
+                let updatedItems: CartItem[];
+                if (existingIndex >= 0) {
+                  const currentItem = guestCart.items[existingIndex];
+                  const newQuantity = currentItem.quantity + quantity;
+
+                  if (currentItem.product.stock !== undefined && newQuantity > currentItem.product.stock) {
+                    throw new Error(`Only ${currentItem.product.stock} items available in stock.`);
+                  }
+
+                  updatedItems = guestCart.items.map((item, idx) =>
+                    idx === existingIndex ? { ...item, quantity: newQuantity } : item
+                  );
+                } else {
+                  if (product.stock !== undefined && quantity > product.stock) {
+                    throw new Error(`Only ${product.stock} items available in stock.`);
+                  }
+
+                  const newItem: CartItem = {
+                    id: `cart-item-${productId}-${Date.now()}`,
+                    product: { ...product, stock: product.stock ?? 0 },
+                    quantity,
+                    unit_price: product.price
+                  };
+                  updatedItems = [...guestCart.items, newItem];
+                }
+
+                const updatedCart = { ...guestCart, items: updatedItems };
+                if (!currentCart) {
+                  localStorage.setItem('guest_cart_id', updatedCart.id);
+                }
+                set({ cart: updatedCart, loading: false });
+              } else {
+                throw e;
+              }
+            }
           } else {
             // Guest cart
             const guestCart = currentCart || { id: cartId || `guest-${Date.now()}`, userId: null, items: [] };
