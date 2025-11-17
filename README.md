@@ -2,6 +2,8 @@
 
 مشروع متجر إلكتروني احترافي ومتكامل يتكون من واجهة خلفية قوية مبنية بـ Node.js/Express وPostgreSQL، وواجهة أمامية حديثة ومتجاوبة مبنية بـ React + Vite مع دعم كامل للغتين العربية والإنجليزية.
 
+here is the website demo link: 
+https://drive.google.com/file/d/12qZ7BGl9S3BRCXVNqBqAsni_aOWcTWaL/view?usp=sharing
 ## ✨ المميزات الرئيسية
 
 ### 🎯 الواجهة الأمامية
