@@ -54,15 +54,27 @@ pool.on('error', (err) => {
   console.error('Unexpected error on idle database client:', err.message);
 });
 
+function logDatabaseTarget(connectionString: string): void {
+  try {
+    const { hostname } = new URL(connectionString);
+    const ssl = resolveSsl(connectionString);
+    console.log(`DB target: ${hostname} | SSL: ${ssl === false ? 'off' : 'on'}`);
+
+    if (process.env.RENDER && hostname.includes('-postgres.render.com')) {
+      console.error(
+        'Wrong DATABASE_URL: you are using the External URL on Render. ' +
+          'In Postgres → Connections, copy Internal Database URL ' +
+          '(hostname should be dpg-xxxxx-a without .oregon-postgres.render.com).'
+      );
+    }
+  } catch {
+    console.log('DB target: invalid DATABASE_URL format');
+  }
+}
+
 export async function testDatabaseConnection(): Promise<void> {
   if (process.env.DATABASE_URL) {
-    try {
-      const { hostname } = new URL(process.env.DATABASE_URL);
-      const ssl = resolveSsl(process.env.DATABASE_URL);
-      console.log(`DB target: ${hostname} | SSL: ${ssl === false ? 'off' : 'on'}`);
-    } catch {
-      console.log('DB target: invalid DATABASE_URL format');
-    }
+    logDatabaseTarget(process.env.DATABASE_URL);
   }
 
   const client = await pool.connect();
