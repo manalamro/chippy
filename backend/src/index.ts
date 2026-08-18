@@ -2,8 +2,8 @@ import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import dotenv from 'dotenv';
-import { Pool } from 'pg';
 import authRoutes from './routes/auth';
+import { testDatabaseConnection } from './config/database';
 import productRoutes from './routes/products';
 import cartRoutes from './routes/cart';
 import orderRoutes from './routes/orders';
@@ -15,22 +15,6 @@ dotenv.config();
 
 // Create Express app
 const app = express();
-
-// Database configuration (يدعم DATABASE_URL والـ SSL في Production)
-const pool = new Pool(
-  process.env.DATABASE_URL
-    ? {
-        connectionString: process.env.DATABASE_URL,
-        ssl: { rejectUnauthorized: false }
-      }
-    : {
-        user: process.env.DB_USER,
-        host: process.env.DB_HOST,
-        database: process.env.DB_NAME,
-        password: process.env.DB_PASSWORD,
-        port: parseInt(process.env.DB_PORT || '5432'),
-      }
-);
 
 // CORS configuration
 const allowedOrigins: (string | RegExp)[] = [
@@ -120,13 +104,11 @@ app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
 
-// Test DB Connection independently
-pool.connect((err, client, release) => {
-  if (err) {
-    console.error('Error connecting to the database:', err.stack);
-  } else {
-    console.log('Successfully connected to the database');
-    release();
+// Test DB connection (non-blocking — server keeps running if DB is unavailable)
+testDatabaseConnection().catch((err) => {
+  console.error('Error connecting to the database:', err.message);
+  if (process.env.DATABASE_URL) {
+    console.error('Check DATABASE_URL on Render — use Internal Database URL from your Postgres service.');
   }
 });
 
