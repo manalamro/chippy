@@ -1,9 +1,8 @@
-
-
 {
   "compilerOptions": {
     "target": "es2017",
-    "module": "commonjs",
+    "module": "node16",
+    "moduleResolution": "node16",
     "lib": ["es6"],
     "allowJs": true,
     "outDir": "dist",
@@ -13,8 +12,7 @@
     "esModuleInterop": true,
     "resolveJsonModule": true,
     "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true,
-    "moduleResolution": "node"
+    "forceConsistentCasingInFileNames": true
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules", "dist", "tests"]
