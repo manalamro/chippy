@@ -3,10 +3,10 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-// استخدم DATABASE_URL للتوافق مع بيئات الاستضافة، مع SSL في الإنتاج
+// استخدم DATABASE_URL للتوافق مع بيئات الاستضافة، مع SSL عند الاتصال عبر Render/Heroku
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL || undefined,
-  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
+  ssl: process.env.DATABASE_URL ? { rejectUnauthorized: false } : false,
   user: process.env.DATABASE_URL ? undefined : process.env.DB_USER,
   host: process.env.DATABASE_URL ? undefined : process.env.DB_HOST,
   database: process.env.DATABASE_URL ? undefined : process.env.DB_NAME,
