@@ -109,6 +109,9 @@ testDatabaseConnection().catch((err) => {
   console.error('Error connecting to the database:', err.message);
   if (process.env.DATABASE_URL) {
     console.error('Check DATABASE_URL on Render — use Internal Database URL from your Postgres service.');
+    console.error('If using External URL, set DATABASE_SSL=true. Remove NODE_TLS_REJECT_UNAUTHORIZED=0.');
+  } else {
+    console.error('DATABASE_URL is not set — add it in Render Environment variables.');
   }
 });
 
