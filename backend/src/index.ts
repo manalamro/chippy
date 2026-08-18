@@ -16,26 +16,32 @@ dotenv.config();
 // Create Express app
 const app = express();
 
-// Database configuration
-const pool = new Pool({
-  user: process.env.DB_USER,
-  host: process.env.DB_HOST,
-  database: process.env.DB_NAME,
-  password: process.env.DB_PASSWORD,
-  port: parseInt(process.env.DB_PORT || '5432'),
-});
+// Database configuration (يدعم DATABASE_URL والـ SSL في Production)
+const pool = new Pool(
+  process.env.DATABASE_URL
+    ? {
+        connectionString: process.env.DATABASE_URL,
+        ssl: { rejectUnauthorized: false }
+      }
+    : {
+        user: process.env.DB_USER,
+        host: process.env.DB_HOST,
+        database: process.env.DB_NAME,
+        password: process.env.DB_PASSWORD,
+        port: parseInt(process.env.DB_PORT || '5432'),
+      }
+);
 
-// CORS configuration - يسمح بـ Vite + React و Production
+// CORS configuration
 const allowedOrigins: (string | RegExp)[] = [
-  'http://localhost:5173', // Vite dev server
-  'http://localhost:3000', // React dev server آخر (إذا موجود)
-  'https://chippy-i378.onrender.com', // Production
-  /\.vercel\.app$/ // أي subdomain على Vercel
+  'http://localhost:5173',
+  'http://localhost:3000',
+  'https://chippy-i378.onrender.com',
+  /\.vercel\.app$/
 ];
 
 const corsOptions = {
   origin: (origin: string | undefined, callback: Function) => {
-    // السماح بالطلبات بدون Origin (مثل Vite dev server)
     if (!origin || allowedOrigins.some(o => (typeof o === 'string' ? o === origin : o.test(origin)))) {
       callback(null, true);
     } else {
@@ -54,7 +60,7 @@ app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Logging middleware (اختياري)
+// Logging middleware
 app.use((req, res, next) => {
   const origin = req.get('origin') || 'no-origin';
   console.log(`${new Date().toISOString()} - ${req.method} ${req.path} - Origin: ${origin}`);
@@ -86,10 +92,10 @@ app.use((
   let statusCode = err.statusCode || 500;
   let message = err.message || 'Internal Server Error';
 
-  if (err.code === '23505') { // unique_violation
+  if (err.code === '23505') {
     statusCode = 409;
     message = 'Resource already exists';
-  } else if (err.code === '23503') { // foreign_key_violation
+  } else if (err.code === '23503') {
     statusCode = 400;
     message = 'Invalid reference';
   }
@@ -106,21 +112,22 @@ app.use('*', (req, res) => {
   res.status(404).json({ message: 'Route not found' });
 });
 
-// Test database connection and start server
-const PORT = 5000;
+// Port declaration (استخدام بورت منصة Render أو 5000 محلياً)
+const PORT = process.env.PORT || 5000;
 
-pool.connect((err, client, release) => {
-  if (err) {
-    return console.error('Error acquiring client', err.stack);
-  }
-  console.log('Connected to database');
-  release();
-  
-  app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
-  });
+// Start server directly
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
 });
 
-// Export the app for testing purposes
-export default app;
+// Test DB Connection independently
+pool.connect((err, client, release) => {
+  if (err) {
+    console.error('Error connecting to the database:', err.stack);
+  } else {
+    console.log('Successfully connected to the database');
+    release();
+  }
+});
 
+export default app;
